@@ -56,4 +56,67 @@ public class ExtJSResponseList<T> extends ExtJSResponse {
 		this.page = page;
 	}
 
+	public static class Builder<T> {
+		
+		private Collection<T> data;
+		
+		private boolean success;
+		private String msg;
+		private String code;
+		private Throwable exception;
+		private Type type = Type.INFO;
+
+		private int total;
+		private int page;
+		
+        public Builder() {}
+        
+        public Builder<T> setStatus(final boolean status) {
+        	this.success = status;
+        	return this;
+        }
+
+        public Builder<T> setMessage(final String message) {
+        	this.msg = message;
+        	return this;
+        }
+        
+        public Builder<T> setCode(final String code) {
+        	this.code = code;
+        	return this;
+        }
+        
+		public Builder<T> setData(Collection<T> data) {
+			this.data = data;
+			return this;
+		}
+        
+        public Builder<T> setTotal(final int total) {
+        	this.total = total;
+        	return this;
+        }
+        
+        public Builder<T> setPage(final int page) {
+        	this.page = page;
+        	return this;
+        }        
+        
+        public ExtJSResponseList<T> build() {
+        	final ExtJSResponseList<T> resp = new ExtJSResponseList<>(success, msg);
+        	resp.setCode(code);
+        	resp.setType(type);
+        	resp.setData(data);
+        	resp.setTotal(total);
+        	resp.setPage(page);
+        	if (exception != null) {
+        		resp.setError(exception, msg);
+        	}
+        	return resp;
+        }
+        
+        public static  <K> Builder<K> create(final Class<K> type) {
+        	return new Builder<>();
+        }
+	}
+
 }

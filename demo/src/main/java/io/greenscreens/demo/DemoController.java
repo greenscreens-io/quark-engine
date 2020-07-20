@@ -22,20 +22,22 @@ public class DemoController {
 
 	@ExtJSMethod("hello")
 	public ExtJSResponse helloWorld(final String name) {
-		ExtJSResponse resp = new ExtJSResponse(true, null);
-		resp.setMsg("Hello ".concat(name));
-		return resp;
+		
+		return ExtJSResponse.Builder.create()
+				.setStatus(true)
+				.setMessage("Hello ".concat(name))
+				.build();
 	}
 
 	@ExtJSMethod("saveUser")
 	public ExtJSObjectResponse<UserModel> save(final String name, final String email) {
 
-		final ExtJSObjectResponse<UserModel> resp = new ExtJSObjectResponse<>(true, null);
-		
 		final UserModel model = getUser(name, email);
-		resp.setData(model);
 		
-		return resp;
+		return ExtJSObjectResponse.Builder.create(UserModel.class)
+				.setStatus(true)
+				.setData(model)
+				.build();
 	}
 	
 	@ExtJSMethod("listUsers")
@@ -47,9 +49,10 @@ public class DemoController {
 		list.add(getUser("Jane Doe", "jane.doe@acme.com"));
 		list.add(getUser("Mark Smith", "mark.smith@acme.com"));
 		
-		final ExtJSResponseList<UserModel> resp = new ExtJSResponseList<>(true);
-		resp.setData(list);		
-		return resp;
+		return ExtJSResponseList.Builder.create(UserModel.class)
+				.setStatus(true)
+				.setData(list)
+				.build();	
 	}
 	
 	private UserModel getUser(final String name, final String email) {
@@ -58,6 +61,6 @@ public class DemoController {
 		model.setName(name);
 		model.setEmail(email);
 		return model;
-
 	}
+	
 }

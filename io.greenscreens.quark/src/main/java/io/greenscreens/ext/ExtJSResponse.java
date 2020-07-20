@@ -118,8 +118,50 @@ public class ExtJSResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ExtJSResponse [success=" + success + ", msg=" + msg + ", code=" + code + ", exception=" + exception
-				+ "]";
+		return "ExtJSResponse [success=" + success + ", msg=" + msg + ", code=" + code + 
+				", exception=" + exception	+ "]";
 	}
 
+	public static class Builder {
+		
+		private boolean success;
+		private String msg;
+		private String code;
+		private Throwable exception;
+		private Type type = Type.INFO;
+
+        public Builder() {}
+        
+        public Builder setStatus(final boolean status) {
+        	this.success = status;
+        	return this;
+        }
+
+        public Builder setMessage(final String message) {
+        	this.msg = message;
+        	return this;
+        }
+        
+        public Builder setCode(final String code) {
+        	this.code = code;
+        	return this;
+        }
+
+        public ExtJSResponse build() {
+        	final ExtJSResponse resp = new ExtJSResponse(success, msg);
+        	resp.setCode(code);
+        	resp.setType(type);
+        	if (exception != null) {
+        		resp.setError(exception, msg);
+        	}
+        	return resp;
+        }
+
+        public static Builder create() {
+        	return new Builder();
+        }
+
+	}
+
+	
 }
