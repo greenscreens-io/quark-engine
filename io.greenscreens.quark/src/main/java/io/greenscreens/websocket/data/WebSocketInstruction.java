@@ -17,22 +17,22 @@ public enum WebSocketInstruction {
     ENC("enc"),
     INS("ins"), // internal instruction
     ECHO("echo")
-    ;
+	;
 
-    private final String text;
+	private final String text;
 
-    private WebSocketInstruction(final String text) {
-        this.text = text;
-    }
+	private WebSocketInstruction(final String text) {
+		this.text = text;
+	}
 
-    @JsonValue
-    public String getText() {
-        return text;
-    }
+	@JsonValue
+	public String getText() {
+		return text;
+	}
 
-    @Override
-    public String toString() {
-        return text;
-    }
-	
+	@Override
+	public String toString() {
+		return text;
+	}
+
 }

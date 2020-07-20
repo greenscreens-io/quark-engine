@@ -6,97 +6,95 @@ package io.greenscreens.ext;
 import java.io.Serializable;
 
 /**
- ExtJs standard response structure used by other extended response classes
-
- { "success": false,
-   "msg": "",
-   "error": "",
-   "stack": ""
-  }
+ * ExtJs standard response structure used by other extended response classes
+ * 
+ * { "success": false, "msg": "", "error": "", "stack": "" }
  */
 public class ExtJSResponse implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    
-    public static boolean EXPOSE_ERROR = false;
-    
-    public enum Type {INFO, WAR, ERROR, NOTIFY};
-    
-    private boolean success;
-    private String msg;
-    private String code;
-    private Throwable exception;
-    private Type type = Type.INFO;
+	private static final long serialVersionUID = 1L;
 
-    public ExtJSResponse(final boolean success) {
-        super();
-        this.success = success;
-        this.msg = null;
-    }
+	public static boolean EXPOSE_ERROR = false;
 
-    public ExtJSResponse(final boolean success, final String message) {
-        super();
-        this.success = success;
-        this.msg = message;
-    }
+	public enum Type {
+		INFO, WAR, ERROR, NOTIFY
+	};
 
-    public ExtJSResponse(final Throwable exception, final String message) {
-        setError(exception, message);
-    }
+	private boolean success;
+	private String msg;
+	private String code;
+	private Throwable exception;
+	private Type type = Type.INFO;
 
-    public ExtJSResponse() {
-        super();
-        this.success = false;
-    }
+	public ExtJSResponse(final boolean success) {
+		super();
+		this.success = success;
+		this.msg = null;
+	}
 
-    public final boolean isSuccess() {
-        return success;
-    }
+	public ExtJSResponse(final boolean success, final String message) {
+		super();
+		this.success = success;
+		this.msg = message;
+	}
 
-    public final void setSuccess(final boolean success) {
-        this.success = success;
-    }
+	public ExtJSResponse(final Throwable exception, final String message) {
+		setError(exception, message);
+	}
 
-    public final String getMsg() {
-        return msg;
-    }
+	public ExtJSResponse() {
+		super();
+		this.success = false;
+	}
 
-    public final void setMsg(final String msg) {
-        setMsg(Type.INFO, msg);
-    }
+	public final boolean isSuccess() {
+		return success;
+	}
 
-    public final void setMsg(final Type type, final String msg) {
-        this.msg = msg;
-        this.type = type;
-    }
-    
-    public final Throwable getException() {
-        return exception;
-    }
+	public final void setSuccess(final boolean success) {
+		this.success = success;
+	}
 
-    public final void setException(final Throwable exception) {
+	public final String getMsg() {
+		return msg;
+	}
 
-    	if (exception == null) {
-            return;
-        }
+	public final void setMsg(final String msg) {
+		setMsg(Type.INFO, msg);
+	}
 
-    	if (EXPOSE_ERROR) {
-        	this.exception = exception;
+	public final void setMsg(final Type type, final String msg) {
+		this.msg = msg;
+		this.type = type;
+	}
 
-            if (exception instanceof RuntimeException && exception.getCause() != null) {
-                this.exception = exception.getCause();
-            } else {
-                this.exception = exception;
-            }    		
-    	}
+	public final Throwable getException() {
+		return exception;
+	}
 
-    }
+	public final void setException(final Throwable exception) {
 
-    public final void setError(final Throwable exception, final String message) {
-        success = false;
-        msg = message;
-        //setException(exception);
-    }
+		if (exception == null) {
+			return;
+		}
+
+		if (EXPOSE_ERROR) {
+			this.exception = exception;
+
+			if (exception instanceof RuntimeException && exception.getCause() != null) {
+				this.exception = exception.getCause();
+			} else {
+				this.exception = exception;
+			}
+		}
+
+	}
+
+	public final void setError(final Throwable exception, final String message) {
+		success = false;
+		msg = message;
+		// setException(exception);
+	}
 
 	public String getCode() {
 		return code;
@@ -105,7 +103,7 @@ public class ExtJSResponse implements Serializable {
 	public void setCode(final String code) {
 		this.code = code;
 	}
-	
+
 	public boolean isException() {
 		return exception != null;
 	}
@@ -120,7 +118,8 @@ public class ExtJSResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ExtJSResponse [success=" + success + ", msg=" + msg + ", code=" + code + ", exception=" + exception+ "]";
+		return "ExtJSResponse [success=" + success + ", msg=" + msg + ", code=" + code + ", exception=" + exception
+				+ "]";
 	}
-		
+
 }

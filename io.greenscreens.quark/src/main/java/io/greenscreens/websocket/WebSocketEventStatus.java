@@ -4,6 +4,6 @@
 package io.greenscreens.websocket;
 
 public enum WebSocketEventStatus {
-    START, CLOSE, ERROR, DESTROY
-    //MESSAGE - not used - to optimize 
+	START, CLOSE, ERROR, DESTROY
+	// MESSAGE - not used - to optimize
 }

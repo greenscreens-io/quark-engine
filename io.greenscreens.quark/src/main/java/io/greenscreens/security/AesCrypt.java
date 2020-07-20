@@ -24,7 +24,7 @@ final class AesCrypt implements IAesKey {
 
 	final private static Charset ASCII = Charset.forName("ASCII");
 	final private static Charset UTF8 = Charset.forName("UTF-8");
-	
+
 	private static Cipher cipher;
 
 	private IvParameterSpec ivspec;
@@ -32,8 +32,8 @@ final class AesCrypt implements IAesKey {
 
 	static {
 		try {
-			//cipher = Cipher.getInstance("AES/OFB/NoPadding");
-			cipher = Cipher.getInstance("AES/CTR/NoPadding");			
+			// cipher = Cipher.getInstance("AES/OFB/NoPadding");
+			cipher = Cipher.getInstance("AES/CTR/NoPadding");
 		} catch (GeneralSecurityException e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -72,9 +72,9 @@ final class AesCrypt implements IAesKey {
 		if (secretKey == null || secretKey.length != 16) {
 			throw new RuntimeException("Invalid AES key length");
 		}
-		keyspec = new SecretKeySpec(secretKey, "AES");		
+		keyspec = new SecretKeySpec(secretKey, "AES");
 	}
-	
+
 	/**
 	 * Set Initialization vector to encrypt data to prevent same hash for same
 	 * passwords
@@ -93,10 +93,10 @@ final class AesCrypt implements IAesKey {
 	 * @param iv
 	 */
 	@Override
-	public void setIv(final byte [] iv) {
+	public void setIv(final byte[] iv) {
 		ivspec = new IvParameterSpec(iv);
 	}
-	
+
 	/**
 	 * Encrypt string and return raw byte's
 	 * 
@@ -128,7 +128,7 @@ final class AesCrypt implements IAesKey {
 			encrypted = cipher.doFinal(padString(text).getBytes(UTF8));
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
+			LOG.debug(e.getMessage(), e);
 			throw e;
 		}
 
@@ -185,7 +185,7 @@ final class AesCrypt implements IAesKey {
 
 	@Override
 	public byte[] decryptData(final byte[] data, final IvParameterSpec iv) throws Exception {
-		
+
 		byte[] decrypted = {};
 
 		try {
@@ -194,12 +194,11 @@ final class AesCrypt implements IAesKey {
 			decrypted = cipher.doFinal(data);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
+			LOG.debug(e.getMessage(), e);
 			throw new Exception("[decrypt] " + e.getMessage());
 		}
 		return decrypted;
 	}
-
 
 	/**
 	 * Encrypts string to hex string
@@ -244,7 +243,7 @@ final class AesCrypt implements IAesKey {
 
 	@Override
 	public byte[] encrypt(final byte[] data) throws Exception {
-		
+
 		byte[] encrypted = null;
 
 		try {
@@ -252,7 +251,7 @@ final class AesCrypt implements IAesKey {
 			encrypted = cipher.doFinal(data);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
+			LOG.debug(e.getMessage(), e);
 			throw e;
 		}
 

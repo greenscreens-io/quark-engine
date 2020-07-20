@@ -9,61 +9,61 @@ import io.greenscreens.security.IAesKey;
 import io.greenscreens.web.TnConstants;
 
 /**
- * Object to be converted into JSON structure. 
- * {type :'ws' , sid : session_id , tid : transaction_id, timeout : 0 , ....}
+ * Object to be converted into JSON structure. {type :'ws' , sid : session_id ,
+ * tid : transaction_id, timeout : 0 , ....}
  */
 public class WebSocketResponse {
-    
-    private String type = TnConstants.WEBSOCKET_TYPE;
 
-    private final WebSocketInstruction cmd;
+	private String type = TnConstants.WEBSOCKET_TYPE;
 
-    private String errMsg;
-    private int errId;
-    private Object data;
-    
-    @JsonIgnore
-    private transient IAesKey key;
+	private final WebSocketInstruction cmd;
 
-    public WebSocketResponse(final WebSocketInstruction cmd) {
-        this.cmd = cmd;
-    }
+	private String errMsg;
+	private int errId;
+	private Object data;
 
-    public final String getType() {
-        return type;
-    }
+	@JsonIgnore
+	private transient IAesKey key;
 
-    public final void setType(final String type) {
-        this.type = type;
-    }
+	public WebSocketResponse(final WebSocketInstruction cmd) {
+		this.cmd = cmd;
+	}
 
-    public final String getErrMsg() {
-        return errMsg;
-    }
+	public final String getType() {
+		return type;
+	}
 
-    public final void setErrMsg(final String errMsg) {
-        this.errMsg = errMsg;
-    }
+	public final void setType(final String type) {
+		this.type = type;
+	}
 
-    public final int getErrId() {
-        return errId;
-    }
+	public final String getErrMsg() {
+		return errMsg;
+	}
 
-    public final void setErrId(final int errId) {
-        this.errId = errId;
-    }
+	public final void setErrMsg(final String errMsg) {
+		this.errMsg = errMsg;
+	}
 
-    public final Object getData() {
-        return data;
-    }
+	public final int getErrId() {
+		return errId;
+	}
 
-    public final void setData(final Object data) {
-        this.data = data;
-    }
+	public final void setErrId(final int errId) {
+		this.errId = errId;
+	}
 
-    public final WebSocketInstruction getCmd() {
-        return cmd;
-    }
+	public final Object getData() {
+		return data;
+	}
+
+	public final void setData(final Object data) {
+		this.data = data;
+	}
+
+	public final WebSocketInstruction getCmd() {
+		return cmd;
+	}
 
 	public IAesKey getKey() {
 		return key;
@@ -78,5 +78,5 @@ public class WebSocketResponse {
 		return "WebSocketResponse [type=" + type + ", cmd=" + cmd + ", errMsg=" + errMsg + ", errId=" + errId
 				+ ", data=" + data + ", key=" + key + "]";
 	}
-		
+
 }

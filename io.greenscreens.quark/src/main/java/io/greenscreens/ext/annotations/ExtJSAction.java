@@ -12,10 +12,10 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Used to define ExtJS.Direct controller and it's namespace.
- * Each controller to be accessible from ExtJS.Direct must have this qualifier.
- * Engine uses this to match incoming request on rest service to defined actions.
- * Used mostly for security control.
+ * Used to define ExtJS.Direct controller and it's namespace. Each controller to
+ * be accessible from ExtJS.Direct must have this qualifier. Engine uses this to
+ * match incoming request on rest service to defined actions. Used mostly for
+ * security control.
  *
  */
 @Qualifier
@@ -23,7 +23,7 @@ import javax.inject.Qualifier;
 @Target({ TYPE })
 public @interface ExtJSAction {
 
-    String namespace();
+	String namespace();
 
-    String action();
+	String action();
 }

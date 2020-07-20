@@ -13,20 +13,20 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
- * Used to link rest / websocket service to Controller
- * Also used by descriptor service to ba able to generate ExtJS dynamic code.
+ * Used to link rest / websocket service to Controller Also used by descriptor
+ * service to ba able to generate ExtJS dynamic code.
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ TYPE })
 public @interface ExtJSSession {
 
-    /**
-     * if * then all matched;
-     * if not set then ignored and not generally available
-     * if set, must match corresponding UriInfo from rest service
-     * @return
-     */
-    @Nonbinding
-    boolean required();
+	/**
+	 * if * then all matched; if not set then ignored and not generally available if
+	 * set, must match corresponding UriInfo from rest service
+	 * 
+	 * @return
+	 */
+	@Nonbinding
+	boolean required();
 }

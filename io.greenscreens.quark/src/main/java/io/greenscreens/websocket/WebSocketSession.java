@@ -34,288 +34,287 @@ import io.greenscreens.websocket.data.WebSocketInstruction;
 import io.greenscreens.websocket.data.WebSocketResponse;
 
 /**
- * Class for holding WebSocket session data.
- * Purpose of this class is similar to HttpSession
+ * Class for holding WebSocket session data. Purpose of this class is similar to
+ * HttpSession
  */
 public class WebSocketSession implements Session {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebSocketSession.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WebSocketSession.class);
 
-    private final Session session;
-    
-    //private ExtJSDirectRequest<?> request;
+	private final Session session;
 
-    public WebSocketSession(final Session session) {
-        super();
-        this.session = session;        
-    }
+	// private ExtJSDirectRequest<?> request;
 
-    public WebSocketSession(final Session session, final HttpSession httpSession) {
+	public WebSocketSession(final Session session) {
+		super();
+		this.session = session;
+	}
 
-    	this.session = session;
-        
-    	if (httpSession != null) {
-            session.getUserProperties().put(HttpSession.class.getCanonicalName(), httpSession);            
-        }
-    }
+	public WebSocketSession(final Session session, final HttpSession httpSession) {
 
-    @Override
-    public final void addMessageHandler(final MessageHandler arg0) throws IllegalStateException {
-        session.addMessageHandler(arg0);
-    }
+		this.session = session;
 
-    @Override
-    public final void close() throws IOException {
-        
-    	if (session.isOpen()) {
-        
-    		final WebSocketResponse response = new WebSocketResponse(WebSocketInstruction.BYE);
-            
-    		try {
-                session.getBasicRemote().sendObject(response);
-            } catch (EncodeException e) {
-            	LOG.error(e.getMessage());
-            	LOG.trace(e.getMessage(), e);
-            }
-            close(new CloseReason(CloseCodes.NORMAL_CLOSURE, ""));
-        }
-    }
-
-    @Override
-    public final void close(final CloseReason arg0) throws IOException {
-    	if (session.isOpen()) {
-    		session.close(arg0);
-    	}
-    }
-
-    
-    public final ServletContext getContext() {
-    	return getHttpSession().getServletContext();
-    }
-    
-    public final boolean sendResponse(final WebSocketResponse wsResponse, final boolean async) {
-
-        if (wsResponse == null) {
-            return false;
-        }
-
-        if(!session.isOpen()) {
-          LOG.warn("Websocket response not sent, session is closed for {}!", this);
-          try {
-			close(new CloseReason(CloseCodes.CANNOT_ACCEPT, ""));
-		} catch (IOException e) {
-			LOG.warn(e.getMessage());
-            LOG.debug(e.getMessage(), e);
+		if (httpSession != null) {
+			session.getUserProperties().put(HttpSession.class.getCanonicalName(), httpSession);
 		}
-          return false; 
-        }
-         
-        boolean success = true;
-        
-        try {
-        	final IAesKey aes = (IAesKey) session.getUserProperties().get(TnConstants.HTTP_SEESION_ENCRYPT);
-        	wsResponse.setKey(aes);
-        	
-            if (async) {
-                session.getAsyncRemote().sendObject(wsResponse);
-            } else {
-                session.getBasicRemote().sendObject(wsResponse);
-            }
+	}
 
-        } catch (IllegalStateException e) {
-        	// session invalidated
-        	LOG.warn(e.getMessage());
-            LOG.debug(e.getMessage(), e);
-        	success = false;
-        } catch (Exception e) {
-            success = false;
-            LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
-        }
+	@Override
+	public final void addMessageHandler(final MessageHandler arg0) throws IllegalStateException {
+		session.addMessageHandler(arg0);
+	}
 
-        return success;
-    }
+	@Override
+	public final void close() throws IOException {
 
-    @Override
-    public final WebSocketContainer getContainer() {
-        return session.getContainer();
-    }
+		if (session.isOpen()) {
 
-    @Override
-    public final String getId() {
-        return session.getId();
-    }
+			final WebSocketResponse response = new WebSocketResponse(WebSocketInstruction.BYE);
 
-    @Override
-    public final int getMaxBinaryMessageBufferSize() {
-        return session.getMaxBinaryMessageBufferSize();
-    }
+			try {
+				session.getBasicRemote().sendObject(response);
+			} catch (EncodeException e) {
+				LOG.error(e.getMessage());
+				LOG.trace(e.getMessage(), e);
+			}
+			close(new CloseReason(CloseCodes.NORMAL_CLOSURE, ""));
+		}
+	}
 
-    @Override
-    public final long getMaxIdleTimeout() {
-        return session.getMaxIdleTimeout();
-    }
+	@Override
+	public final void close(final CloseReason arg0) throws IOException {
+		if (session.isOpen()) {
+			session.close(arg0);
+		}
+	}
 
-    @Override
-    public final int getMaxTextMessageBufferSize() {
-        return session.getMaxTextMessageBufferSize();
-    }
+	public final ServletContext getContext() {
+		return getHttpSession().getServletContext();
+	}
 
-    @Override
-    public final Set<MessageHandler> getMessageHandlers() {
-        return session.getMessageHandlers();
-    }
+	public final boolean sendResponse(final WebSocketResponse wsResponse, final boolean async) {
 
-    @Override
-    public final List<Extension> getNegotiatedExtensions() {
-        return session.getNegotiatedExtensions();
-    }
+		if (wsResponse == null) {
+			return false;
+		}
 
-    @Override
-    public final String getNegotiatedSubprotocol() {
-        return session.getNegotiatedSubprotocol();
-    }
+		if (!session.isOpen()) {
+			LOG.warn("Websocket response not sent, session is closed for {}!", this);
+			try {
+				close(new CloseReason(CloseCodes.CANNOT_ACCEPT, ""));
+			} catch (IOException e) {
+				LOG.warn(e.getMessage());
+				LOG.debug(e.getMessage(), e);
+			}
+			return false;
+		}
 
-    @Override
-    public final Set<Session> getOpenSessions() {
-        return session.getOpenSessions();
-    }
+		boolean success = true;
 
-    @Override
-    public final Map<String, String> getPathParameters() {
-        return session.getPathParameters();
-    }
+		try {
+			final IAesKey aes = (IAesKey) session.getUserProperties().get(TnConstants.HTTP_SEESION_ENCRYPT);
+			wsResponse.setKey(aes);
 
-    @Override
-    public final String getProtocolVersion() {
-        return session.getProtocolVersion();
-    }
+			if (async) {
+				session.getAsyncRemote().sendObject(wsResponse);
+			} else {
+				session.getBasicRemote().sendObject(wsResponse);
+			}
 
-    @Override
-    public final String getQueryString() {
-        return session.getQueryString();
-    }
+		} catch (IllegalStateException e) {
+			// session invalidated
+			LOG.warn(e.getMessage());
+			LOG.debug(e.getMessage(), e);
+			success = false;
+		} catch (Exception e) {
+			success = false;
+			LOG.error(e.getMessage());
+			LOG.debug(e.getMessage(), e);
+		}
 
-    @Override
-    public final Map<String, List<String>> getRequestParameterMap() {
-        return session.getRequestParameterMap();
-    }
+		return success;
+	}
 
-    @Override
-    public final URI getRequestURI() {
-        return session.getRequestURI();
-    }
+	@Override
+	public final WebSocketContainer getContainer() {
+		return session.getContainer();
+	}
 
-    @Override
-    public final Principal getUserPrincipal() {
-        return session.getUserPrincipal();
-    }
+	@Override
+	public final String getId() {
+		return session.getId();
+	}
 
-    @Override
-    public final Map<String, Object> getUserProperties() {
-        return session.getUserProperties();
-    }
+	@Override
+	public final int getMaxBinaryMessageBufferSize() {
+		return session.getMaxBinaryMessageBufferSize();
+	}
 
-    @Override
-    public final boolean isOpen() {
-        return session.isOpen();
-    }
+	@Override
+	public final long getMaxIdleTimeout() {
+		return session.getMaxIdleTimeout();
+	}
 
-    @Override
-    public final boolean isSecure() {
-        return session.isSecure();
-    }
+	@Override
+	public final int getMaxTextMessageBufferSize() {
+		return session.getMaxTextMessageBufferSize();
+	}
 
-    @Override
-    public final void removeMessageHandler(final MessageHandler arg0) {
-        session.removeMessageHandler(arg0);
-    }
+	@Override
+	public final Set<MessageHandler> getMessageHandlers() {
+		return session.getMessageHandlers();
+	}
 
-    @Override
-    public final void setMaxBinaryMessageBufferSize(final int arg0) {
-        session.setMaxBinaryMessageBufferSize(arg0);
-    }
+	@Override
+	public final List<Extension> getNegotiatedExtensions() {
+		return session.getNegotiatedExtensions();
+	}
 
-    @Override
-    public final void setMaxIdleTimeout(final long arg0) {
-        session.setMaxIdleTimeout(arg0);
-    }
+	@Override
+	public final String getNegotiatedSubprotocol() {
+		return session.getNegotiatedSubprotocol();
+	}
 
-    @Override
-    public final void setMaxTextMessageBufferSize(final int arg0) {
-        session.setMaxTextMessageBufferSize(arg0);
-    }
+	@Override
+	public final Set<Session> getOpenSessions() {
+		return session.getOpenSessions();
+	}
 
-    public final HttpSession getHttpSession() {
-        return (HttpSession) session.getUserProperties().get(HttpSession.class.getCanonicalName());
-    }
+	@Override
+	public final Map<String, String> getPathParameters() {
+		return session.getPathParameters();
+	}
 
-    public final boolean isValidHttpSession() {
-    	
-        final HttpSession httpSession = getHttpSession();
-        
-        if (httpSession == null) {
-            return false;
-        }
+	@Override
+	public final String getProtocolVersion() {
+		return session.getProtocolVersion();
+	}
 
-        try {
-            final String attr = (String) httpSession.getAttribute(TnConstants.HTTP_SEESION_STATUS);
-            return Boolean.TRUE.toString().equals(attr);        	
-        } catch(Exception e) {
-            LOG.debug(e.getMessage(), e);
-        	return false;
-        }
+	@Override
+	public final String getQueryString() {
+		return session.getQueryString();
+	}
 
-    }
+	@Override
+	public final Map<String, List<String>> getRequestParameterMap() {
+		return session.getRequestParameterMap();
+	}
 
-    @Override
-    public final boolean equals(final Object obj) {
-        
-    	boolean status = false;
-        
-    	if (obj instanceof WebSocketSession) {
-        
-    		try {
-                
-    			final Field f = WebSocketSession.class.getField("session");
-                f.setAccessible(true);
-            
-                final Object o = f.get(obj);
-                status = session.equals(o);
-                
-            } catch (Exception e) {
-                status = false;
-                LOG.debug(e.getMessage(), e);
-            }
-    		
-        }
+	@Override
+	public final URI getRequestURI() {
+		return session.getRequestURI();
+	}
 
-    	return status;
-    }
+	@Override
+	public final Principal getUserPrincipal() {
+		return session.getUserPrincipal();
+	}
 
-    @Override
-    public final int hashCode() {
-        return session.hashCode();
-    }
+	@Override
+	public final Map<String, Object> getUserProperties() {
+		return session.getUserProperties();
+	}
 
-    @Override
-    public final Async getAsyncRemote() {
-        return session.getAsyncRemote();
-    }
+	@Override
+	public final boolean isOpen() {
+		return session.isOpen();
+	}
 
-    @Override
-    public final Basic getBasicRemote() {
-        return session.getBasicRemote();
-    }
+	@Override
+	public final boolean isSecure() {
+		return session.isSecure();
+	}
+
+	@Override
+	public final void removeMessageHandler(final MessageHandler arg0) {
+		session.removeMessageHandler(arg0);
+	}
+
+	@Override
+	public final void setMaxBinaryMessageBufferSize(final int arg0) {
+		session.setMaxBinaryMessageBufferSize(arg0);
+	}
+
+	@Override
+	public final void setMaxIdleTimeout(final long arg0) {
+		session.setMaxIdleTimeout(arg0);
+	}
+
+	@Override
+	public final void setMaxTextMessageBufferSize(final int arg0) {
+		session.setMaxTextMessageBufferSize(arg0);
+	}
+
+	public final HttpSession getHttpSession() {
+		return (HttpSession) session.getUserProperties().get(HttpSession.class.getCanonicalName());
+	}
+
+	public final boolean isValidHttpSession() {
+
+		final HttpSession httpSession = getHttpSession();
+
+		if (httpSession == null) {
+			return false;
+		}
+
+		try {
+			final String attr = (String) httpSession.getAttribute(TnConstants.HTTP_SEESION_STATUS);
+			return Boolean.TRUE.toString().equals(attr);
+		} catch (Exception e) {
+			LOG.debug(e.getMessage(), e);
+			return false;
+		}
+
+	}
+
+	@Override
+	public final boolean equals(final Object obj) {
+
+		boolean status = false;
+
+		if (obj instanceof WebSocketSession) {
+
+			try {
+
+				final Field f = WebSocketSession.class.getField("session");
+				f.setAccessible(true);
+
+				final Object o = f.get(obj);
+				status = session.equals(o);
+
+			} catch (Exception e) {
+				status = false;
+				LOG.debug(e.getMessage(), e);
+			}
+
+		}
+
+		return status;
+	}
+
+	@Override
+	public final int hashCode() {
+		return session.hashCode();
+	}
+
+	@Override
+	public final Async getAsyncRemote() {
+		return session.getAsyncRemote();
+	}
+
+	@Override
+	public final Basic getBasicRemote() {
+		return session.getBasicRemote();
+	}
 
 	@Override
 	public <T> void addMessageHandler(final Class<T> arg0, final Whole<T> arg1) {
-		
+
 	}
 
 	@Override
 	public <T> void addMessageHandler(final Class<T> arg0, final Partial<T> arg1) {
-		
+
 	}
 
 }

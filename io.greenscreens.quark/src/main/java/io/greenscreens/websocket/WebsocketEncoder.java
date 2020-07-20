@@ -27,63 +27,62 @@ import io.greenscreens.websocket.data.WebSocketResponse;
  */
 public class WebsocketEncoder implements Encoder.Text<WebSocketResponse> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebsocketEncoder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WebsocketEncoder.class);
 
+	@Override
+	public final void destroy() {
 
-    @Override
-    public final void destroy() {
+	}
 
-    }
+	@Override
+	public final void init(final EndpointConfig arg0) {
 
-    @Override
-    public final void init(final EndpointConfig arg0) {
+	}
 
-    }
+	@Override
+	public final String encode(final WebSocketResponse data) throws EncodeException {
 
-    @Override
-    public final String encode(final WebSocketResponse data) throws EncodeException {
-    	
-    	String response = null;
-        
-    	try {
-        
-    		final ObjectMapper mapper = JsonDecoder.getJSONEngine();
-    		
-    		if (mapper != null) {
-            	final IAesKey key = data.getKey();
-            	data.setKey(null);
-            	
-                response = mapper.writeValueAsString(data);                
-                response = encrypt(response, key);                
-            }
-    		
-        } catch (Exception e) {
-        	LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
-            throw new EncodeException(data, e.getMessage(), e);
-        }
-    	
-        if (response == null) {
-            response = "";
-        }
-                
-        return response;
-    }
+		String response = null;
 
-    private final String encrypt(final String data, final IAesKey crypt) throws Exception {
-    	
-    	if (crypt == null) {
-    		return data;
-    	}
-    	    	
-    	final byte[] iv = Security.getRandom(crypt.getCipher().getBlockSize());
-    	final String enc = crypt.encrypt(data, iv);
-    	final ObjectNode node = JsonNodeFactory.instance.objectNode();
-    	node.put("iv", Util.bytesToHex(iv));
-    	node.put("d", enc);
-    	node.put("cmd", WebSocketInstruction.ENC.toString());
-    	final String json = JsonDecoder.getJSONEngine().writeValueAsString(node);   
-    	return json;
-    }
-    
+		try {
+
+			final ObjectMapper mapper = JsonDecoder.getJSONEngine();
+
+			if (mapper != null) {
+				final IAesKey key = data.getKey();
+				data.setKey(null);
+
+				response = mapper.writeValueAsString(data);
+				response = encrypt(response, key);
+			}
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			LOG.debug(e.getMessage(), e);
+			throw new EncodeException(data, e.getMessage(), e);
+		}
+
+		if (response == null) {
+			response = "";
+		}
+
+		return response;
+	}
+
+	private final String encrypt(final String data, final IAesKey crypt) throws Exception {
+
+		if (crypt == null) {
+			return data;
+		}
+
+		final byte[] iv = Security.getRandom(crypt.getCipher().getBlockSize());
+		final String enc = crypt.encrypt(data, iv);
+		final ObjectNode node = JsonNodeFactory.instance.objectNode();
+		node.put("iv", Util.bytesToHex(iv));
+		node.put("d", enc);
+		node.put("cmd", WebSocketInstruction.ENC.toString());
+		final String json = JsonDecoder.getJSONEngine().writeValueAsString(node);
+		return json;
+	}
+
 }

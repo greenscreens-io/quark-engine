@@ -5,41 +5,40 @@ package io.greenscreens.ext;
 
 import java.util.Collection;
 
-
 /**
  * ExtJS array response structure.
  */
 public class ExtJSResponseList<T> extends ExtJSResponse {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Collection<T> data;
-    private int total;
-    private int page;
+	private Collection<T> data;
+	private int total;
+	private int page;
 
-    public ExtJSResponseList() {
-        super();
-    }
+	public ExtJSResponseList() {
+		super();
+	}
 
-    public ExtJSResponseList(final boolean success) {
-        super(success);
-    }
-    
-    public ExtJSResponseList(final boolean success, final String message) {
-        super(success, message);
-    }
+	public ExtJSResponseList(final boolean success) {
+		super(success);
+	}
 
-    public ExtJSResponseList(final Throwable exception, final String message) {
-        super(exception, message);
-    }
+	public ExtJSResponseList(final boolean success, final String message) {
+		super(success, message);
+	}
 
-    public final Collection<T> getData() {
-        return data;
-    }
+	public ExtJSResponseList(final Throwable exception, final String message) {
+		super(exception, message);
+	}
 
-    public final void setData(final Collection<T> data) {
-        this.data = data;
-    }
+	public final Collection<T> getData() {
+		return data;
+	}
+
+	public final void setData(final Collection<T> data) {
+		this.data = data;
+	}
 
 	public int getTotal() {
 		return total;
@@ -56,5 +55,5 @@ public class ExtJSResponseList<T> extends ExtJSResponse {
 	public void setPage(int page) {
 		this.page = page;
 	}
-        
+
 }

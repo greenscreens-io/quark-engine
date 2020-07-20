@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSessionListener;
 public class SessionCollector implements HttpSessionListener, HttpSessionActivationListener {
 
 	private static final Map<Integer, HttpSession> sessions = new ConcurrentHashMap<Integer, HttpSession>();
-	
+
 	@Override
 	public void sessionCreated(final HttpSessionEvent event) {
 		HttpSession session = event.getSession();
@@ -42,12 +42,12 @@ public class SessionCollector implements HttpSessionListener, HttpSessionActivat
 	public static HttpSession get(final int key) {
 		return sessions.get(key);
 	}
-	
-    public static void updateSessionTimeout(final int tout) {
-    	final Iterator<HttpSession> sess =  sessions.values().iterator();
-    	while (sess.hasNext()) {
-    		sess.next().setMaxInactiveInterval(tout);
-    	}
-    }
-    
+
+	public static void updateSessionTimeout(final int tout) {
+		final Iterator<HttpSession> sess = sessions.values().iterator();
+		while (sess.hasNext()) {
+			sess.next().setMaxInactiveInterval(tout);
+		}
+	}
+
 }

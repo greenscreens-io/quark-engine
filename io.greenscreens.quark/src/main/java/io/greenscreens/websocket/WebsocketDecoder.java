@@ -19,46 +19,46 @@ import io.greenscreens.websocket.data.WebSocketRequest;
  */
 public class WebsocketDecoder implements Decoder.Text<WebSocketRequest> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebsocketDecoder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WebsocketDecoder.class);
 
-    @Override
-    public final WebSocketRequest decode(final String message) throws DecodeException {
+	@Override
+	public final WebSocketRequest decode(final String message) throws DecodeException {
 
-        WebSocketRequest wsMessage = null;
-        LOG.trace("WebSocket request {}" , message);
-        
-        try {
-            final JsonDecoder<WebSocketRequest> jd = new JsonDecoder<>(WebSocketRequest.class, message);
-            wsMessage = jd.getObject();
-        } catch (Exception e) {
-        	LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
-            throw new DecodeException(message, e.getMessage(), e);
-        }
-        
-        return wsMessage;
-    }
+		WebSocketRequest wsMessage = null;
+		LOG.trace("WebSocket request {}", message);
 
-    @Override
-    public final boolean willDecode(final String message) {
+		try {
+			final JsonDecoder<WebSocketRequest> jd = new JsonDecoder<>(WebSocketRequest.class, message);
+			wsMessage = jd.getObject();
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			LOG.debug(e.getMessage(), e);
+			throw new DecodeException(message, e.getMessage(), e);
+		}
 
-    	boolean decode = false;
-        
-    	if (message != null) {
-            decode = message.trim().startsWith("{") && message.trim().endsWith("}");
-        }
-        
-    	return decode;
-    }
+		return wsMessage;
+	}
 
-    @Override
-    public void destroy() {
+	@Override
+	public final boolean willDecode(final String message) {
 
-    }
+		boolean decode = false;
 
-    @Override
-    public void init(final EndpointConfig arg0) {
+		if (message != null) {
+			decode = message.trim().startsWith("{") && message.trim().endsWith("}");
+		}
 
-    }
-	
+		return decode;
+	}
+
+	@Override
+	public void destroy() {
+
+	}
+
+	@Override
+	public void init(final EndpointConfig arg0) {
+
+	}
+
 }

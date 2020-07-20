@@ -14,8 +14,8 @@ public interface IAesKey {
 	 * @param secretKey
 	 */
 	void setSecretKey(String secretKey);
-	
-	void setSecretKey(byte [] secretKey);
+
+	void setSecretKey(byte[] secretKey);
 
 	/**
 	 * Set Initialization vector to encrypt data to prevent same hash for same
@@ -24,7 +24,7 @@ public interface IAesKey {
 	 * @param iv
 	 */
 	void setIv(String iv);
-	
+
 	void setIv(byte[] iv);
 
 	/**

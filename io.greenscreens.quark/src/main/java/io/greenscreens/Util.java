@@ -117,7 +117,7 @@ public enum Util {
 			val = Integer.parseInt(normalize(value, "0").trim());
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
+			LOG.debug(e.getMessage(), e);
 		}
 
 		return val;
@@ -137,7 +137,7 @@ public enum Util {
 			val = Long.parseLong(normalize(value, "0").trim());
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-            LOG.debug(e.getMessage(), e);
+			LOG.debug(e.getMessage(), e);
 		}
 
 		return val;
@@ -217,7 +217,7 @@ public enum Util {
 				closeable.close();
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
-	            LOG.debug(e.getMessage(), e);
+				LOG.debug(e.getMessage(), e);
 			}
 		}
 	}
@@ -266,6 +266,5 @@ public enum Util {
 
 		return sb.toString();
 	}
-
 
 }

@@ -11,16 +11,16 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 
 /**
- * Used to define remotely available action method.
- * Name must match name from incoming ExtJS.Direct call
+ * Used to define remotely available action method. Name must match name from
+ * incoming ExtJS.Direct call
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ METHOD })
 public @interface ExtJSMethod {
 
-    String value();
+	String value();
 
-    @Nonbinding
-    boolean formHandler() default false;
-    
+	@Nonbinding
+	boolean formHandler() default false;
+
 }

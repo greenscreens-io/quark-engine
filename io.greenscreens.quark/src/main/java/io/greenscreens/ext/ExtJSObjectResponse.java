@@ -3,25 +3,19 @@
  */
 package io.greenscreens.ext;
 
-
 /**
- ExtJs standard response structure used by other extended response classes
-
- { "success": false,
-   "msg": "",
-   "error": "",
-   "stack": ""
-  }
+ * ExtJs standard response structure used by other extended response classes
+ * 
+ * { "success": false, "msg": "", "error": "", "stack": "" }
  */
 public class ExtJSObjectResponse<T> extends ExtJSResponse {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private T data;
-    
-    
+	private T data;
+
 	public ExtJSObjectResponse() {
-		super();	
+		super();
 	}
 
 	public ExtJSObjectResponse(boolean success) {
@@ -43,5 +37,5 @@ public class ExtJSObjectResponse<T> extends ExtJSResponse {
 	public void setData(T data) {
 		this.data = data;
 	}
-		
+
 }
