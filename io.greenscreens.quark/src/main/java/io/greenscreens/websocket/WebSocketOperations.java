@@ -208,6 +208,7 @@ public class WebSocketOperations<T> {
 			}
 
 		} catch (Exception e) {
+			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 			response = new ExtJSResponse(e, e.getMessage());
 			err = true;
@@ -440,8 +441,8 @@ public class WebSocketOperations<T> {
 			di = beanManagerUtil.getDestructibleBeanInstance(bean);
 			final Object beanInstance = di.getInstance();
 
-			// if (javaMethod.isAccessible()) {
-			if (javaMethod.canAccess(beanInstance)) {
+			if (javaMethod.isAccessible()) {
+			//if (javaMethod.canAccess(beanInstance)) {
 				javaMethod.setAccessible(true);
 			}
 

@@ -8,7 +8,7 @@
  */
 
 if (typeof module !== 'undefined') {
-	module.exports = Emitter;
+  module.exports = Emitter;
 }
 
 /**
@@ -18,7 +18,7 @@ if (typeof module !== 'undefined') {
  */
 
 function Emitter(obj) {
-	if (obj) return mixin(obj);
+  if (obj) return mixin(obj);
 };
 
 /**
@@ -30,11 +30,11 @@ function Emitter(obj) {
  */
 
 function mixin(obj) {
-	for (let key in Emitter.prototype) {
-		obj[key] = Emitter.prototype[key];
-	}
-	obj._callbacks = {};
-	return obj;
+  for (let key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  obj._callbacks={};
+  return obj;
 }
 
 /**
@@ -47,12 +47,12 @@ function mixin(obj) {
  */
 
 Emitter.prototype.on =
-	Emitter.prototype.addEventListener = function(event, fn) {
-		this._callbacks = this._callbacks || {};
-		(this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-		.push(fn);
-		return this;
-	};
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
 
 /**
  * Adds an `event` listener that will be invoked a single
@@ -64,15 +64,15 @@ Emitter.prototype.on =
  * @api public
  */
 
-Emitter.prototype.once = function(event, fn) {
-	function on() {
-		this.off(event, on);
-		fn.apply(this, arguments);
-	}
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
 
-	on.fn = fn;
-	this.on(event, on);
-	return this;
+  on.fn = fn;
+  this.on(event, on);
+  return this;
 };
 
 /**
@@ -86,45 +86,45 @@ Emitter.prototype.once = function(event, fn) {
  */
 
 Emitter.prototype.off =
-	Emitter.prototype.removeListener =
-	Emitter.prototype.removeAllListeners =
-	Emitter.prototype.removeEventListener = function(event, fn) {
-		this._callbacks = this._callbacks || {};
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
 
-		// all
-		if (0 == arguments.length) {
-			this._callbacks = {};
-			return this;
-		}
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
 
-		// specific event
-		let callbacks = this._callbacks['$' + event];
-		if (!callbacks) return this;
+  // specific event
+  let callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
 
-		// remove all handlers
-		if (1 == arguments.length) {
-			delete this._callbacks['$' + event];
-			return this;
-		}
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
 
-		// remove specific handler
-		let cb;
-		for (let i = 0; i < callbacks.length; i++) {
-			cb = callbacks[i];
-			if (cb === fn || cb.fn === fn) {
-				callbacks.splice(i, 1);
-				break;
-			}
-		}
+  // remove specific handler
+  let cb;
+  for (let i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
 
-		// Remove event specific arrays for event types that no
-		// one is subscribed for to avoid memory leak.
-		if (callbacks.length === 0) {
-			delete this._callbacks['$' + event];
-		}
+  // Remove event specific arrays for event types that no
+  // one is subscribed for to avoid memory leak.
+  if (callbacks.length === 0) {
+    delete this._callbacks['$' + event];
+  }
 
-		return this;
-	};
+  return this;
+};
 
 /**
  * Emit `event` with the given args.
@@ -134,19 +134,19 @@ Emitter.prototype.off =
  * @return {Emitter}
  */
 
-Emitter.prototype.emit = function(event) {
-	this._callbacks = this._callbacks || {};
-	let args = [].slice.call(arguments, 1),
-		callbacks = this._callbacks['$' + event];
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  let args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
 
-	if (callbacks) {
-		callbacks = callbacks.slice(0);
-		for (let i = 0, len = callbacks.length; i < len; ++i) {
-			callbacks[i].apply(this, args);
-		}
-	}
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (let i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
 
-	return this;
+  return this;
 };
 
 /**
@@ -157,9 +157,9 @@ Emitter.prototype.emit = function(event) {
  * @api public
  */
 
-Emitter.prototype.listeners = function(event) {
-	this._callbacks = this._callbacks || {};
-	return this._callbacks['$' + event] || [];
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
 };
 
 /**
@@ -170,6 +170,6 @@ Emitter.prototype.listeners = function(event) {
  * @api public
  */
 
-Emitter.prototype.hasListeners = function(event) {
-	return !!this.listeners(event).length;
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
 };

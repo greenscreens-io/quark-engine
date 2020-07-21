@@ -13,6 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.greenscreens.security.Security;
+
 /**
  * Simple util class for string handling
  */
@@ -265,6 +271,31 @@ public enum Util {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * Create API response object
+	 * 
+	 * @param api
+	 * @param challenge
+	 */
+	public static ObjectNode buildAPI(final ArrayNode api, final String challenge) {
+
+		final ObjectNode root = JsonNodeFactory.instance.objectNode();
+		root.set("api", api);
+
+		final String keyEnc = Security.getRSAPublic(true);
+		final String keyVer = Security.getRSAVerifier(true);
+		root.put("keyEnc", keyEnc);
+		root.put("keyVer", keyVer);
+		
+		if (challenge != null) {
+			final String signature = Security.signApiKey(challenge);
+			root.put("signature", signature);
+		}
+		
+		return root;
+
 	}
 
 }

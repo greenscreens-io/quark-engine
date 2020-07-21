@@ -25,7 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.greenscreens.Util;
+import io.greenscreens.cdi.BeanManagerUtil;
 import io.greenscreens.ext.ExtJSDirectRequest;
 import io.greenscreens.ext.ExtJSDirectResponse;
 import io.greenscreens.ext.ExtJSResponse;
@@ -46,6 +50,9 @@ public class WebSocketEndpoint {
 	private static final ThreadLocal<WebSocketSession> websocketContextThreadLocal = new ThreadLocal<WebSocketSession>();
 	// private static final long MINUTE = 60_000;
 
+	@Inject
+	private BeanManagerUtil BM;
+	
 	@Inject
 	private Event<WebsocketEvent> webSocketEvent;
 
@@ -122,6 +129,8 @@ public class WebSocketEndpoint {
 			case DATA:
 				processData(false, wsession, message);
 				break;
+			case API:
+				processSimple(wsession, message);				
 			case ECHO:
 				processSimple(wsession, message);
 				break;
@@ -202,6 +211,10 @@ public class WebSocketEndpoint {
 
 			updateSessions(wsession);
 
+			if (session.getUserProperties().containsKey(TnConstants.WEBSOCKET_CHALLENGE)) {
+				sendAPI(wsession);	
+			}
+			
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
@@ -272,8 +285,36 @@ public class WebSocketEndpoint {
 		return wsResponse;
 	}
 
+	private boolean sendAPI(final WebSocketSession session) {
+		
+		if (BM == null) return false;
+		
+		if (!session.getUserProperties().containsKey(TnConstants.WEBSOCKET_CHALLENGE)) {
+			return false;
+		}
+		
+		final String challenge = (String) session.getUserProperties().get(TnConstants.WEBSOCKET_CHALLENGE);
+		final WebSocketResponse wsResposne = new WebSocketResponse(WebSocketInstruction.API);		
+		
+		final ArrayNode api = BM.getAPI();
+		final ObjectNode root = Util.buildAPI(api, challenge); 
+		wsResposne.setData(root);		
+		
+		session.sendResponse(wsResposne, true);
+		return true;
+	}
+
+
 	private void processSimple(final WebSocketSession session, final WebSocketRequest message) {
-		final WebSocketResponse wsResposne = new WebSocketResponse(message.getCmd());
+		
+		final WebSocketInstruction cmd = message.getCmd();
+		
+		final WebSocketResponse wsResposne = new WebSocketResponse(cmd);
+		
+		if (WebSocketInstruction.API == cmd && BM != null) {
+			sendAPI(session);
+		}
+		
 		session.sendResponse(wsResposne, true);
 	}
 

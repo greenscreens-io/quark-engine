@@ -20,24 +20,29 @@ import io.greenscreens.ext.annotations.ExtJSMethod;
 @ExtJSAction(namespace = DemoURLConstants.NAMESPACE, action = "Demo")
 public class DemoController {
 
+	@ExtJSMethod( value = "helloUnsafe", encrypt = false)
+	public ExtJSResponse helloWorldUnsafe(final String name) {
+		ExtJSResponse resp = new ExtJSResponse(true, null);
+		resp.setMsg("Hello ".concat(name));
+		return resp;
+	}
+	
 	@ExtJSMethod("hello")
 	public ExtJSResponse helloWorld(final String name) {
-		
-		return ExtJSResponse.Builder.create()
-				.setStatus(true)
-				.setMessage("Hello ".concat(name))
-				.build();
+		ExtJSResponse resp = new ExtJSResponse(true, null);
+		resp.setMsg("Hello ".concat(name));
+		return resp;
 	}
 
 	@ExtJSMethod("saveUser")
 	public ExtJSObjectResponse<UserModel> save(final String name, final String email) {
 
-		final UserModel model = getUser(name, email);
+		final ExtJSObjectResponse<UserModel> resp = new ExtJSObjectResponse<>(true, null);
 		
-		return ExtJSObjectResponse.Builder.create(UserModel.class)
-				.setStatus(true)
-				.setData(model)
-				.build();
+		final UserModel model = getUser(name, email);
+		resp.setData(model);
+		
+		return resp;
 	}
 	
 	@ExtJSMethod("listUsers")
@@ -49,10 +54,9 @@ public class DemoController {
 		list.add(getUser("Jane Doe", "jane.doe@acme.com"));
 		list.add(getUser("Mark Smith", "mark.smith@acme.com"));
 		
-		return ExtJSResponseList.Builder.create(UserModel.class)
-				.setStatus(true)
-				.setData(list)
-				.build();	
+		final ExtJSResponseList<UserModel> resp = new ExtJSResponseList<>(true);
+		resp.setData(list);		
+		return resp;
 	}
 	
 	private UserModel getUser(final String name, final String email) {
@@ -61,6 +65,6 @@ public class DemoController {
 		model.setName(name);
 		model.setEmail(email);
 		return model;
+
 	}
-	
 }

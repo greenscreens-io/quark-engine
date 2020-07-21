@@ -217,6 +217,9 @@ public class BeanManagerUtil {
 					methodsNode.add(objNode);
 					objNode.put("name", extJSMethod.value());
 					objNode.put("len", method.getParameterCount());
+					if (!extJSMethod.encrypt()) {
+						objNode.put("encrypt", false);
+					}
 				}
 			}
 

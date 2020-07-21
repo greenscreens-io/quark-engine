@@ -22,8 +22,6 @@ import javax.websocket.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.greenscreens.ext.annotations.ExtJSSession;
-import io.greenscreens.web.TnConstants;
 import io.greenscreens.websocket.data.WebSocketRequest;
 import io.greenscreens.websocket.data.WebSocketResponse;
 
@@ -60,8 +58,6 @@ public class WebSocketService {
 			return;
 		}
 
-		final boolean requireSession = isSessionRequired();
-		session.getUserProperties().put(TnConstants.WEBSOCKET_SESSION, requireSession);
 		endpoint.onOpen(session, config);
 	}
 
@@ -93,18 +89,6 @@ public class WebSocketService {
 			LOG.error(e.getMessage(), e);
 		}
 
-	}
-
-	private boolean isSessionRequired() {
-
-		boolean requireSession = false;
-
-		final ExtJSSession annoSess = this.getClass().getAnnotation(ExtJSSession.class);
-		if (annoSess != null) {
-			requireSession = annoSess.required();
-		}
-
-		return requireSession;
 	}
 
 	public <T> T getBean(Class<T> cls) {

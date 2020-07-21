@@ -63,18 +63,7 @@ public class APIServlet extends HttpServlet {
 		try {
 
 			final ArrayNode api = BM.getAPI();
-			final ObjectNode root = JsonNodeFactory.instance.objectNode();
-			root.set("api", api);
-
-			if (challenge != null) {
-				final String keyEnc = Security.getRSAPublic(true);
-				final String keyVer = Security.getRSAVerifier(true);
-				final String signature = Security.signApiKey(challenge);
-				root.put("keyEnc", keyEnc);
-				root.put("keyVer", keyVer);
-				root.put("signature", signature);
-			}
-
+			final ObjectNode root = Util.buildAPI(api, challenge); 
 			json = JsonDecoder.stringify(root);
 
 		} catch (Exception e) {
@@ -86,7 +75,7 @@ public class APIServlet extends HttpServlet {
 	}
 
 	/**
-	 * Post request will process unencrypted / encrypted requests
+	 * Post request will process non-encrypted / encrypted requests
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

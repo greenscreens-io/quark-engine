@@ -37,6 +37,14 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
 		return TnConstants.WEBSOCKET_SUBPROTOCOL;
 	}
 
+	private String findChallenge(final HandshakeRequest request) {
+		final List<String> list = request.getParameterMap().get("q");
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+	
 	private int findSessionToken(final HandshakeRequest request) {
 
 		int token = 0;
@@ -120,6 +128,11 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
 
 		map.put(Locale.class.getCanonicalName(), getLocale(request));
 		map.put(TnConstants.WEBSOCKET_PATH, sec.getPath());
+		
+		final String challenge = findChallenge(request);
+		if (challenge != null) {
+			map.put(TnConstants.WEBSOCKET_CHALLENGE, challenge);
+		}
 	}
 
 	/**

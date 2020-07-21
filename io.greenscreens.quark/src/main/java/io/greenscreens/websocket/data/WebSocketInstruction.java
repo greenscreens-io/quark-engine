@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum WebSocketInstruction {
 
     WELCO("welco"), 
+    API("api"),
     BYE("bye"), 
     ERR("err"), 
     DATA("data"),

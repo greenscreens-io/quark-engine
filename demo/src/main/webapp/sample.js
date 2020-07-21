@@ -17,10 +17,11 @@
  *   This engine supports both channels
  */
 
-const isSecured  = location.protocol == "https:";
-const wsProtocol = isSecured ? 'wss':'ws';
-const ws    = `${wsProtocol}://${location.host}/demo/socket`;
-const api   = `${location.origin}/demo/api`;
+const isSecured  = location.protocol === "https:";
+const wsProtocol = isSecured === true ? 'wss':'ws';
+const ws    = `${wsProtocol}://${location.host}/io.greenscreens.quark/socket`;
+const api   = `${location.origin}/io.greenscreens.quark/api`;
+
 const msg   = 'This is a test for encrypting đšžćčĐŠŽČ';
 
 /**
@@ -66,10 +67,16 @@ function test2() {
  */
 async function test3() {
 
+	let data = null;
+	
     await Engine.init({api: api, service:api});
 
-    let data = await io.greenscreens.Demo.hello('John Doe');
+	// encryption enabled by default (see DemoController.java)
+    data = await io.greenscreens.Demo.hello('John Doe');
+    console.log(data);
 
+	// encryption disabled (see DemoController.java)
+    data = await io.greenscreens.Demo.helloUnsafe('John Doe');
     console.log(data);
 }
 
@@ -94,6 +101,8 @@ async function test5() {
 
     await Engine.init({api: api, service:ws});
 
+	// no encryption on request as no data (parameter on functon)
+	// response is encrypted
     let data = await io.greenscreens.Demo.saveUser('John Doe', 'john.doe@acme.com');
     console.log(data);
 }

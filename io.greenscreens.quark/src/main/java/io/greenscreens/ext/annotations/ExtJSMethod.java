@@ -23,4 +23,6 @@ public @interface ExtJSMethod {
 	@Nonbinding
 	boolean formHandler() default false;
 
+	@Nonbinding
+	boolean encrypt() default true;
 }

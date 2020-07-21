@@ -14,6 +14,7 @@ public enum TnConstants {
     
     public static final String WEBSOCKET_SESSION     = "io.greenscreens.websocket.session";
     public static final String WEBSOCKET_PATH        = "io.greenscreens.websocket.path";
+    public static final String WEBSOCKET_CHALLENGE   = "io.greenscreens.websocket.challenge";
     public static final String WEBSOCKET_SUBPROTOCOL = "ws4is";
     public static final String WEBSOCKET_TYPE        = "ws";
     

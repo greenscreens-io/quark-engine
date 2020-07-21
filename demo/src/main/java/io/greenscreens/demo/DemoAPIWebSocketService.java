@@ -3,21 +3,24 @@
  */
 package io.greenscreens.demo;
 
+import javax.enterprise.event.Observes;
 import javax.websocket.server.ServerEndpoint;
-import io.greenscreens.ext.annotations.ExtJSEndpoint;
-import io.greenscreens.ext.annotations.ExtJSSession;
+
 import io.greenscreens.websocket.WebSocketConfigurator;
 import io.greenscreens.websocket.WebSocketService;
+import io.greenscreens.websocket.WebsocketBroadcastEvent;
 import io.greenscreens.websocket.WebsocketDecoder;
 import io.greenscreens.websocket.WebsocketEncoder;
 
-@ExtJSEndpoint
-@ExtJSSession(required = false)
 @ServerEndpoint(
 		value = DemoURLConstants.WSOCKET,
 		configurator = WebSocketConfigurator.class,
         decoders = { WebsocketDecoder.class}, 
         encoders = { WebsocketEncoder.class})
 public class DemoAPIWebSocketService extends WebSocketService {
-		
+	
+	public void broadcast(@Observes final WebsocketBroadcastEvent wsEvent) {
+    	super.broadcast(wsEvent.getData());
+    }
+	
 }
