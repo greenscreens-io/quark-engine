@@ -183,13 +183,8 @@ public class APIServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private ExtJSDirectRequest<JsonNode> getRequest(final String json) throws IOException {
-
-		JsonDecoder<WebRequest> decoder = null;
-		ExtJSDirectRequest<JsonNode> req = null;
-
-		decoder = new JsonDecoder<>(WebRequest.class, json);
-		req = decoder.getObject();
-
+		final JsonDecoder<WebRequest> decoder = new JsonDecoder<>(WebRequest.class, json);
+		final ExtJSDirectRequest<JsonNode> req = decoder.getObject();
 		return req;
 	}
 
