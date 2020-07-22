@@ -12,7 +12,7 @@ function hex2ab(str) {
 
 	let a = [];
 
-	for (var i = 0; i < str.length; i += 2) {
+	for (let i = 0; i < str.length; i += 2) {
 		a.push(parseInt("0x" + str.substr(i, 2), 16));
 	}
 

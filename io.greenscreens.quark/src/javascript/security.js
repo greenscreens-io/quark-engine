@@ -58,7 +58,6 @@ Security = (() => {
         return new Uint8Array(buffer);
     }
 
-
     /**
      * Import RSA key received from server
      * Key is publicKey used to send encrypted AES key 

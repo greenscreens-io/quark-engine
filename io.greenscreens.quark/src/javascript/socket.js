@@ -54,6 +54,7 @@ SocketChannel = (() => {
 
         let enc = null;
         let data = null;
+		let verb = 'data';
 
         let isEncrypt = canEncrypt(req);
 
@@ -61,14 +62,12 @@ SocketChannel = (() => {
 
         // encrypt if supported
         if (isEncrypt) {
-
             enc = await Security.encrypt(JSON.stringify(req.data));
             req.data = [enc];
-            data = {cmd:'enc', type:'ws', data : [req]};
+			verb = 'enc';            
+        } 
 
-        } else {
-             data = {cmd:'data', type:'ws', data : [req]};
-        }
+		data = {cmd:verb, type:'ws', data : [req]};
 
         // send 
         webSocket.send(JSON.stringify(data));
@@ -147,7 +146,7 @@ SocketChannel = (() => {
         
         if (Array.isArray(obj)) {
             
-            obj.every(function(o) {
+            obj.every( o => {
                 onData(o);
                 return true;
             });

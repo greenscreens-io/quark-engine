@@ -32,7 +32,7 @@ Generator = (() => {
 	function buildAPI(cfg) {
 	
 		if (Array.isArray(cfg)) {
-			cfg.every(function(v) {
+			cfg.every(v => {
 				buildInstance(v);  
 				return true;
 			});
@@ -60,7 +60,7 @@ Generator = (() => {
 		}
 		action = tree[api.action];
 			
-		api.methods.every(function(v) {
+		api.methods.every(v => {
 			buildMethod(api.namespace, api.action, action, v);
 			return true;
 		});
@@ -79,7 +79,7 @@ Generator = (() => {
 		
 		var tmp = null;
 		
-		namespace.split('.').every(function(v) {
+		namespace.split('.').every( v => {
 			
 			if (!tmp) {
 				if (!window[v]) window[v] = {};
@@ -142,8 +142,8 @@ Generator = (() => {
 				"data": args
 			};
 			
-			promise = new Promise(function(resolve, reject) {
-                exported.emit('call', req, function(err, obj) {
+			promise = new Promise( (resolve, reject) => {
+                exported.emit('call', req, (err, obj) =>  {
                     onResponse(err, obj, prop, resolve, reject);
 				});
 			});

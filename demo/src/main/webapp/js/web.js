@@ -67,14 +67,14 @@ WebChannel = (() => {
 	 */
 	function init(url) {
         
-		Generator.on('call', function(req, callback) {
-
-             onCall(url, req)
-             .then((o) => {
-                 callback(null, o);
-             }).catch((e) => {
-                 callback(e, null);
-             });
+		Generator.on('call', async (req, callback) => {
+			
+			try {
+            	let o = await onCall(url, req);
+				callback(null, o);				
+			} catch(e) {				
+            	callback(e, null);
+			}
 			
         });
         
