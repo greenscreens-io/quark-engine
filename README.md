@@ -3,7 +3,7 @@
 
 Visit project web page [here](https://www.greenscreens.io/quark).
 
-Just as quarks in astrophysics are building blocks which glues subatomic particles into atoms,
+Just as quarks are building blocks which glues subatomic particles into atoms,
 Green Screens Quark Engine is a small, lite and fast elementary building block between web and Java server side.
 
 The Quark Engine is a JavaScript and Java web library to enable dynamic remote calls of exposed Java Methods.
