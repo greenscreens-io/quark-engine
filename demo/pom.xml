@@ -6,12 +6,11 @@
 
   <groupId>io.greenscreens.quark-demo</groupId>
   <artifactId>demo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>Green Screens Quark Engine Demo</name>
-
-  <url>http://www.greenscreens/quark</url>
+  <url>https://www.greenscreens/quark</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

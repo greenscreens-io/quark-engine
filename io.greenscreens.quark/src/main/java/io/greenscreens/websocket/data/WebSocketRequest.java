@@ -24,6 +24,8 @@ public class WebSocketRequest {
 	// list of commands - batch
 	private ArrayList<ExtJSDirectRequest<JsonNode>> data;
 
+	private boolean binary = false;
+	
 	public final WebSocketInstruction getCmd() {
 		return cmd;
 	}
@@ -66,6 +68,14 @@ public class WebSocketRequest {
 
 	public final void setData(final ArrayList<ExtJSDirectRequest<JsonNode>> data) {
 		this.data = data;
+	}
+
+	public boolean isBinary() {
+		return binary;
+	}
+
+	public void setBinary(boolean binary) {
+		this.binary = binary;
 	}
 
 	@Override

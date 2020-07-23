@@ -22,8 +22,8 @@ import javax.websocket.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.greenscreens.websocket.data.IWebSocketResponse;
 import io.greenscreens.websocket.data.WebSocketRequest;
-import io.greenscreens.websocket.data.WebSocketResponse;
 
 /**
  * Base WebSocket endpoint with ExtJS support. Should not be used directly.
@@ -38,7 +38,7 @@ public class WebSocketService {
 	private WebSocketEndpoint endpoint;
 
 	// getopensessions does not work across different endpoints
-	public void broadcast(final WebSocketResponse data) {
+	public void broadcast(final IWebSocketResponse data) {
 		endpoint.broadcast(data);
 	}
 

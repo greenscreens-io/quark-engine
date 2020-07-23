@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import io.greenscreens.security.IAesKey;
 import io.greenscreens.web.TnConstants;
+import io.greenscreens.websocket.data.IWebSocketResponse;
 import io.greenscreens.websocket.data.WebSocketInstruction;
 import io.greenscreens.websocket.data.WebSocketResponse;
 
@@ -69,7 +70,7 @@ public class WebSocketSession implements Session {
 
 		if (session.isOpen()) {
 
-			final WebSocketResponse response = new WebSocketResponse(WebSocketInstruction.BYE);
+			final IWebSocketResponse response = new WebSocketResponse(WebSocketInstruction.BYE);
 
 			try {
 				session.getBasicRemote().sendObject(response);
@@ -92,7 +93,7 @@ public class WebSocketSession implements Session {
 		return getHttpSession().getServletContext();
 	}
 
-	public final boolean sendResponse(final WebSocketResponse wsResponse, final boolean async) {
+	public final boolean sendResponse(final IWebSocketResponse wsResponse, final boolean async) {
 
 		if (wsResponse == null) {
 			return false;
@@ -112,14 +113,18 @@ public class WebSocketSession implements Session {
 		boolean success = true;
 
 		try {
-			final IAesKey aes = (IAesKey) session.getUserProperties().get(TnConstants.HTTP_SEESION_ENCRYPT);
-			wsResponse.setKey(aes);
-
+			
+			final Map<String, Object> props = session.getUserProperties();
+			if (props.containsKey( TnConstants.HTTP_SEESION_ENCRYPT )) {
+				final IAesKey aes = (IAesKey) props.get(TnConstants.HTTP_SEESION_ENCRYPT);
+				wsResponse.setKey(aes);	
+			}
+			
 			if (async) {
 				session.getAsyncRemote().sendObject(wsResponse);
 			} else {
 				session.getBasicRemote().sendObject(wsResponse);
-			}
+			}							
 
 		} catch (IllegalStateException e) {
 			// session invalidated

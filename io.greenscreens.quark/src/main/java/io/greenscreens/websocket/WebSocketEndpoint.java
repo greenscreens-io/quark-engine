@@ -34,9 +34,11 @@ import io.greenscreens.ext.ExtJSDirectRequest;
 import io.greenscreens.ext.ExtJSDirectResponse;
 import io.greenscreens.ext.ExtJSResponse;
 import io.greenscreens.web.TnConstants;
+import io.greenscreens.websocket.data.IWebSocketResponse;
 import io.greenscreens.websocket.data.WebSocketInstruction;
 import io.greenscreens.websocket.data.WebSocketRequest;
 import io.greenscreens.websocket.data.WebSocketResponse;
+import io.greenscreens.websocket.data.WebSocketResponseBinary;
 
 /**
  * Internal CDI injectable object used by WebSocket endpoint instance. Used to
@@ -71,7 +73,7 @@ public class WebSocketEndpoint {
 	 * 
 	 * @param message
 	 */
-	public void broadcast(final WebSocketResponse message) {
+	public void broadcast(final IWebSocketResponse message) {
 
 		if (sessions != null) {
 
@@ -149,8 +151,7 @@ public class WebSocketEndpoint {
 			LOG.debug(e.getMessage(), e);
 
 			if (wsession != null) {
-				final WebSocketResponse wsResponse = getErrorResponse(e);
-				wsession.sendResponse(wsResponse, true);
+				wsession.sendResponse(getErrorResponse(e, message.isBinary()), true);
 			}
 
 		} finally {
@@ -275,16 +276,15 @@ public class WebSocketEndpoint {
 		}
 	}
 
-	private WebSocketResponse getErrorResponse(final Exception exception) {
+	private IWebSocketResponse getErrorResponse(final Exception exception, final boolean isBinary) {
 
 		final ExtJSResponse response = new ExtJSResponse(exception, exception.getMessage());
-		final WebSocketResponse wsResponse = new WebSocketResponse(WebSocketInstruction.ERR);
-
+		final IWebSocketResponse wsResponse = newResponse(WebSocketInstruction.ERR, isBinary);
 		wsResponse.setData(response);
 		wsResponse.setErrMsg(exception.getMessage());
 		return wsResponse;
 	}
-
+	
 	private boolean sendAPI(final WebSocketSession session) {
 		
 		if (BM == null) return false;
@@ -308,14 +308,14 @@ public class WebSocketEndpoint {
 	private void processSimple(final WebSocketSession session, final WebSocketRequest message) {
 		
 		final WebSocketInstruction cmd = message.getCmd();
-		
-		final WebSocketResponse wsResposne = new WebSocketResponse(cmd);
-		
+				
 		if (WebSocketInstruction.API == cmd && BM != null) {
 			sendAPI(session);
 		}
 		
-		session.sendResponse(wsResposne, true);
+		final IWebSocketResponse response = newResponse(cmd, message.isBinary());
+		session.sendResponse(response, true);	
+
 	}
 
 	private void processData(final boolean encrypted, final WebSocketSession session, final WebSocketRequest wsMessage)
@@ -332,9 +332,17 @@ public class WebSocketEndpoint {
 			processRequest(encrypted, session, request, wsPath, responseList);
 		}
 
-		final WebSocketResponse wsResponse = new WebSocketResponse(WebSocketInstruction.DATA);
+		final IWebSocketResponse wsResponse = newResponse(WebSocketInstruction.DATA, wsMessage.isBinary());	
 		wsResponse.setData(responseList);
 		session.sendResponse(wsResponse, true);
+		
+	}
+	
+	private IWebSocketResponse newResponse(final WebSocketInstruction instruction, final boolean isBinary) {
+		if (isBinary) {
+			return new WebSocketResponseBinary(instruction);
+		}
+		return new WebSocketResponse(instruction);
 	}
 
 	private void processRequest(final boolean encrypted, final WebSocketSession session,

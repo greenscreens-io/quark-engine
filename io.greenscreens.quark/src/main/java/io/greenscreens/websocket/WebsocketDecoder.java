@@ -30,6 +30,7 @@ public class WebsocketDecoder implements Decoder.Text<WebSocketRequest> {
 		try {
 			final JsonDecoder<WebSocketRequest> jd = new JsonDecoder<>(WebSocketRequest.class, message);
 			wsMessage = jd.getObject();
+			wsMessage.setBinary(false);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);

@@ -195,7 +195,7 @@ Security = (() => {
      * @param 
      * 		data  - string to encrypt
      */
-    async function encrypt(data) {
+    async function encrypt(data, bin) {
 
         let iv = getRandom(16);
         let key = new Uint8Array(iv.length + exportedAES.length);
@@ -206,6 +206,9 @@ Security = (() => {
         let encryptedKey = await encryptRSA(key);
         let encryptedData = await encryptAesMessage(aesKEY, iv, data);
 
+		if (bin === true) {
+			return { d: encryptedData, k: encryptedKey };	
+		}
         return { d: buf2hex(encryptedData), k: buf2hex(encryptedKey) };
 
     }
@@ -250,8 +253,8 @@ Security = (() => {
             return init(cfg);
         },
         
-        encrypt: function(cfg) {
-            return encrypt(cfg);
+        encrypt: function(cfg, bin) {
+            return encrypt(cfg, bin);
         },
         
         decrypt: function(cfg) {

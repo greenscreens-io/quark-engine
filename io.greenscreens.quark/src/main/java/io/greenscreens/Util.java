@@ -4,9 +4,17 @@
 package io.greenscreens;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -190,7 +198,7 @@ public enum Util {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getObject(Object object) {
+	public static <T> T getObject(final Object object) {
 		if (object == null) {
 			return null;
 		}
@@ -203,8 +211,8 @@ public enum Util {
 	 * @param original
 	 * @return
 	 */
-	public static ByteBuffer clone(ByteBuffer original) {
-		ByteBuffer clone = ByteBuffer.allocate(original.capacity());
+	public static ByteBuffer clone(final ByteBuffer original) {
+		final ByteBuffer clone = ByteBuffer.allocate(original.capacity());
 		original.rewind();// copy from the beginning
 		clone.put(original);
 		original.rewind();
@@ -298,4 +306,52 @@ public enum Util {
 
 	}
 
+	public static String ungzip(final byte[] bytes) throws Exception {
+        
+		String result = null;
+		StringWriter sw = null;
+		ByteArrayInputStream bis = null;
+		GZIPInputStream gis = null;
+		InputStreamReader isr = null;
+		
+		
+		try {
+			sw = new StringWriter();
+			bis = new ByteArrayInputStream(bytes);
+			gis = new GZIPInputStream(bis);
+			isr = new InputStreamReader(gis, StandardCharsets.UTF_8);
+
+			final char[] chars = new char[1024];
+			for (int len; (len = isr.read(chars)) > 0; ) {
+				sw.write(chars, 0, len);
+			}
+			sw.flush();
+			result = sw.toString();
+		} finally {
+			close(isr);
+			close(sw);
+		}
+        
+        return result;
+    }
+
+    public static byte[] gzip(final String s) throws Exception {
+        
+    	final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	
+        GZIPOutputStream gzip = null;
+        OutputStreamWriter osw = null;
+        
+        try {
+        	gzip = new GZIPOutputStream(bos);
+        	osw = new OutputStreamWriter(gzip, StandardCharsets.UTF_8);
+        	osw.write(s);
+        	osw.flush();        	
+        } finally {
+			close(osw);
+			close(gzip);
+		}
+        
+        return bos.toByteArray();
+    }
 }

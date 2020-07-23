@@ -8,8 +8,12 @@
  * All Direct functions linked to io.greenscreens namespace
  */
 SocketChannel = (() => {
-	
-    var tid = 0;
+
+	const Decoder = new TextDecoder();
+	const Encoder = new TextEncoder();
+	const Packer = wasm_bindgen || null;
+    var supportCompress = false;
+	var tid = 0;
     var queue = {up : 0, down : 0};    
     var webSocket = null;
 
@@ -52,6 +56,7 @@ SocketChannel = (() => {
      */
     async function onCall(req, callback) {
 
+		let msg = null;
         let enc = null;
         let data = null;
 		let verb = 'data';
@@ -68,10 +73,14 @@ SocketChannel = (() => {
         } 
 
 		data = {cmd:verb, type:'ws', data : [req]};
+		msg = JSON.stringify(data);
+	
+		if (!supportCompress) {
+			return webSocket.send(msg); 
+		}
 
-        // send 
-        webSocket.send(JSON.stringify(data));
-
+        msg = Packer.gzip_encode_raw(Encoder.encode(msg));		        
+		webSocket.send(msg.buffer);
     }    
 
     /**
@@ -85,6 +94,12 @@ SocketChannel = (() => {
         let obj = null;
 
         try {
+
+			if ( message instanceof ArrayBuffer ) {
+                let dec = Packer.gzip_decode_raw(new Uint8Array(message));
+                let text = Decoder.decode(dec);
+                obj = JSON.parse(text);
+			}
 
 			if (typeof message === 'string') {
 				obj = JSON.parse(message);
@@ -194,9 +209,20 @@ SocketChannel = (() => {
 	 * If wss used in url, create WebSocket channel to 
 	 * exchange API messages 
 	 */
-	function startSocket(url, resolve, reject) {
+	async function startSocket(url, wasm, resolve, reject) {
+		
+		if (Packer !== null && !supportCompress) {
+			try {
+				wasm = wasm || 'lib/wasm_flate_bg.wasm';
+				let wasmf = await Packer(wasm);
+				supportCompress = wasmf != null;
+			} catch(e) {
+				supportCompress = false;
+			}
+		}			
 		
 		webSocket = new WebSocket(url, ['ws4is']);
+		webSocket.binaryType = "arraybuffer";
 		
 		webSocket.onopen = function (event) {
             Generator.on('call', listener);			
@@ -226,12 +252,13 @@ SocketChannel = (() => {
      * @param {String} url
      *      WebSocket Service URL 
      */
-	function init(url) {
+	function init(url, wasm) {
 
-        kill();
-        
-        return new Promise(function(resolve, reject) {
-            return startSocket(url, resolve, reject);  
+        kill();      
+
+        return new Promise((resolve, reject) => {
+            startSocket(url, wasm, resolve, reject);
+			return null;	   
 		});
 		
     }  		
@@ -251,8 +278,8 @@ SocketChannel = (() => {
      */
     var exported = {
 	
-		init: function(url) {
-			return init(url);
+		init: function(url, wasm) {
+			return init(url, wasm);
         },
         
         kill : function() {

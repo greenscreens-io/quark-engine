@@ -3,21 +3,21 @@
  */
 package io.greenscreens.websocket;
 
-import io.greenscreens.websocket.data.WebSocketResponse;
+import io.greenscreens.websocket.data.IWebSocketResponse;
 
 /**
  * Class holding event data
  */
 public class WebsocketBroadcastEvent {
 
-	private final WebSocketResponse data;
+	private final IWebSocketResponse data;
 
-	public WebsocketBroadcastEvent(final WebSocketResponse data) {
+	public WebsocketBroadcastEvent(final IWebSocketResponse data) {
 		super();
 		this.data = data;
 	}
 
-	public WebSocketResponse getData() {
+	public IWebSocketResponse getData() {
 		return data;
 	}
 

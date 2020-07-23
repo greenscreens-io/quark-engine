@@ -2,7 +2,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.greenscreens.quark</groupId>
   <artifactId>quark</artifactId>
-  <version>1.2.0</version>
+  <name>Green Screens Quark Engine</name>
+  <url>https://www.greenscreens/quark</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <version>1.3.0</version>
     <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
