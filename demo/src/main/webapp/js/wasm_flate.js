@@ -1,3 +1,7 @@
+/*
+* https://github.com/drbh/wasm-flate
+* MIT LICENSE, APACHE 2.0 LICENSE
+*/
 (function() {
     const __exports = {};
     let wasm;
