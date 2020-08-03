@@ -74,6 +74,7 @@ WebChannel = (() => {
 	 */
 	function init(url) {
 
+		Generator.off('call');
 		Generator.on('call', async (req, callback) => {
 
 			try {

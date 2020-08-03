@@ -16,6 +16,8 @@ Security = (() => {
 	var aesKEY = null;
 	var exportedAES = null;
 
+	const Encoder = new TextEncoder();
+
 	/**
 	 *  Use local challenge, to verify received data signature
 	 *
@@ -104,7 +106,7 @@ Security = (() => {
 	async function verify(key, signature, challenge) {
 
 		let binSignature = str2ab(atob(signature));
-		let binChallenge = new TextEncoder().encode(challenge);
+		let binChallenge = Encoder.encode(challenge);
 		let type = {
 			name: "ECDSA",
 			hash: {
@@ -131,7 +133,7 @@ Security = (() => {
 		let encoded = data;
 
 		if (typeof data === 'string') {
-			encoded = new TextEncoder().encode(data);
+			encoded = Encoder.encode(data);
 		}
 
 		return window.crypto.subtle.encrypt(
@@ -146,7 +148,7 @@ Security = (() => {
 	 */
 	async function encryptAesMessage(key, iv, data) {
 
-		let encoded = new TextEncoder().encode(data);
+		let encoded = Encoder.encode(data);
 		let type = {
 			name: "AES-CTR",
 			counter: iv,

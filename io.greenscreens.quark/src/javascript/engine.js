@@ -32,11 +32,12 @@ Engine = (() => {
 		let isWSChannel = cfg.api === cfg.service && cfg.api.indexOf('ws') == 0;
 
 		if (isWSChannel) {
-			return fromWebSocketChannel(cfg);
+			return await fromWebSocketChannel(cfg);
 		}
 
-		fromWebChannel(cfg);
-		if (initService(cfg)) return true;
+		await fromWebChannel(cfg);
+		let sts = await initService(cfg);
+		if (sts) return true;
 
 		throw new Error(ERROR_MESSAGE);
 
@@ -46,7 +47,7 @@ Engine = (() => {
 	 * Initialize API from WebSocket channel
 	 *
 	 * @param {Object} cfg
-	 * 		  Inti configuration object with api and service url's
+	 * 		  Init configuration object with api and service url's
 	 */
 	async function initService(cfg) {
 
@@ -73,28 +74,38 @@ Engine = (() => {
 	 * Initialize API from WebSocket channel
 	 *
 	 * @param {Object} cfg
-	 * 		  Inti configuration object with api and service url's
+	 * 		  Init configuration object with api and service url's
 	 */
-	async function fromWebSocketChannel(cfg) {
+	function fromWebSocketChannel(cfg) {
 
-		var challenge = Date.now();
+		return new Promise((resolve, reject) => {
 
-		Generator.on('api', async (data) => {
+			var challenge = Date.now();
 
-			Generator.off('api');
-			data.challenge = challenge;
-			await registerAPI(data);
+			Generator.once('api', async (data) => {
 
+				data.challenge = challenge;
+				try {
+					await registerAPI(data);
+					resolve(true);
+				} catch (e) {
+					reject(e);
+				}
+
+			});
+
+			SocketChannel.init(cfg.service + '?q=' + challenge);
+
+			return null;
 		});
 
-		await SocketChannel.init(cfg.service + '?q=' + challenge);
 	}
 
 	/**
 	 * Initialize API from HTTP/s channel
 	 *
 	 * @param {Object} cfg
-	 * 		  Inti configuration object with api and service url's
+	 * 		  Init configuration object with api and service url's
 	 */
 	async function fromWebChannel(cfg) {
 		let data = await getAPI(cfg.api);

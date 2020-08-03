@@ -12,12 +12,14 @@ SocketChannel = (() => {
 	const Decoder = new TextDecoder();
 	const Encoder = new TextEncoder();
 	const Packer = wasm_bindgen || null;
+
 	var supportCompress = false;
 	var tid = 0;
 	var queue = {
 		up: 0,
 		down: 0
 	};
+
 	var webSocket = null;
 
 	/**

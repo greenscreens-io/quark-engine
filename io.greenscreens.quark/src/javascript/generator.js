@@ -14,7 +14,7 @@ Generator = (() => {
 	 * Data is retrieved from API service
 	 *
 	 * @param {String} url || api object
-	 * 		  UR LAddress for API service definitions
+	 * 		  URL Address for API service definitions
 	 */
 	async function build(o) {
 		let data = o.api || o;
