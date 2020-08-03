@@ -120,6 +120,11 @@
 	    <artifactId>bcpkix-jdk15on</artifactId>
 	    <version>1.66</version>
 	    <scope>runtime</scope>
-	</dependency>		  	
-  </dependencies>  
+	</dependency>
+    <dependency>
+        <groupId>net.sf.jt400</groupId>
+        <artifactId>jt400</artifactId>
+        <version>10.4</version>
+    </dependency>
+  </dependencies>
 </project>
