@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
  */
-package io.greenscreens.demo2;
+package io.greenscreens.demo1;
 
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
