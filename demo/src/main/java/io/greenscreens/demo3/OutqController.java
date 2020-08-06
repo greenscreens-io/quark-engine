@@ -71,6 +71,7 @@ public class OutqController {
 			final Enumeration<SpooledFile> enums = list.getObjects();
 
 			final Collection<SpoolData> data = new ArrayList<>();
+			builder.setData(data);
 
 			while (enums.hasMoreElements()) {
 				SpooledFile file = enums.nextElement();

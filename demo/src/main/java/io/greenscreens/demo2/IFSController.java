@@ -74,6 +74,7 @@ public class IFSController {
 				webFile.setName(file.getName());
 				webFile.setPath(file.getAbsolutePath());
 				webFile.setType(file.isDirectory() ? TYPE.FOLDER : TYPE.FILE);
+				data.add(webFile);
 			}
 
 			resp.setData(data);
