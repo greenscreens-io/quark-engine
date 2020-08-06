@@ -16,13 +16,13 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
- * Qualifier for session attribute name 
+ * Qualifier for session attribute name
  */
 @Qualifier
 @Retention(RUNTIME)
 @Target({TYPE,METHOD,FIELD, PARAMETER})
 public @interface SessionAttribute {
 
-   @Nonbinding
-   String value() default "";
+	@Nonbinding
+	String value() default "";
 }

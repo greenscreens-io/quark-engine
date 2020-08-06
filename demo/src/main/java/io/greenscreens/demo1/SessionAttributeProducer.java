@@ -24,10 +24,10 @@ import com.ibm.as400.access.AS400;
  */
 @ApplicationScoped
 public class SessionAttributeProducer implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(SessionAttributeProducer.class);	
-	
+	private static final Logger LOG = LoggerFactory.getLogger(SessionAttributeProducer.class);
+
 	@Inject
 	private HttpServletRequest servletRequest;
 
@@ -41,7 +41,7 @@ public class SessionAttributeProducer implements Serializable {
 	public AS400 sessionAS400AttributeDefault(final InjectionPoint ip) {
 		return produce(ip, AS400.class.getCanonicalName());
 	}
-	
+
 	/**
 	 * AS400 session level producer with custom attribute name
 	 * @param ip
@@ -63,7 +63,7 @@ public class SessionAttributeProducer implements Serializable {
 	private AS400 produce(final InjectionPoint ip, final String name) {
 
 		final HttpSession session = servletRequest.getSession();
-		
+
 		AS400 as400 = (AS400) session.getAttribute(name);
 		if (as400 == null) {
 			as400 = getInstance();
@@ -78,13 +78,17 @@ public class SessionAttributeProducer implements Serializable {
 	 * @return
 	 */
 	private AS400 getInstance() {
+
 		final AS400 as400 = new AS400();
+
 		try {
 			as400.setGuiAvailable(false);
 		} catch (PropertyVetoException e) {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 		}
+
 		return as400;
 	}
+
 }

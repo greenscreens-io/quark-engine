@@ -25,13 +25,13 @@ import io.greenscreens.ext.annotations.ExtJSDirect;
 import io.greenscreens.ext.annotations.ExtJSMethod;
 
 /**
- * Example controller class to work with IFS file system 
- * 
+ * Example controller class to work with IFS file system
+ *
  * await Engine.init({api: api, service:api});
  * await io.greenscreens.AS400.login('as400.acme.com', 'QSECOFR', 'QSECOFR')
  * files = await io.greenscreens.IFS.list('/')
  * await io.greenscreens.AS400.logout()
- * 
+ *
  */
 @ExtJSDirect(paths = { DemoURLConstants.WSOCKET, DemoURLConstants.API })
 @ExtJSAction(namespace = DemoURLConstants.NAMESPACE, action = "IFS")
@@ -39,7 +39,7 @@ public class IFSController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IFSController.class);
 
-	@Inject 
+	@Inject
 	AS400 as400;
 
 	/**
@@ -51,7 +51,7 @@ public class IFSController {
 			throw new RuntimeException("User not verified!");
 		}
 	}
-	
+
 	/**
 	 * List ifs data based on given path.
 	 * @param path
@@ -59,14 +59,14 @@ public class IFSController {
 	 */
 	@ExtJSMethod("list")
 	public ExtJSResponseList<WebFile> login(@Required final String path) {
-		
+
 		final ExtJSResponseList.Builder<WebFile> resp = ExtJSResponseList.Builder.create(WebFile.class);
 
-		try {			
-			
+		try {
+
 			final IFSFile root = new IFSFile(as400, path);
 			final IFSFile [] list = root.listFiles();
-			
+
 			final Collection<WebFile> data = new ArrayList<WebFile>();
 			for (IFSFile file : list) {
 				WebFile webFile = new WebFile();
@@ -84,30 +84,30 @@ public class IFSController {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 		}
-		
+
 		return resp.build();
 	}
-	
+
 	@ExtJSMethod("rename")
-	public ExtJSResponse rename(final String path, final String name) {		
+	public ExtJSResponse rename(final String path, final String name) {
 
 		return new ExtJSResponse(true, null);
 	}
 
 	@ExtJSMethod("remove")
-	public ExtJSResponse remove(final String path) {		
+	public ExtJSResponse remove(final String path) {
 
 		return new ExtJSResponse(true, null);
 	}
 
 	@ExtJSMethod("move")
-	public ExtJSResponse move(final String from, final String to) {		
+	public ExtJSResponse move(final String from, final String to) {
 
 		return new ExtJSResponse(true, null);
 	}
-	
+
 	@ExtJSMethod("copy")
-	public ExtJSResponse copy(final String from, final String to) {		
+	public ExtJSResponse copy(final String from, final String to) {
 
 		return new ExtJSResponse(true, null);
 	}
