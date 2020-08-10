@@ -1,5 +1,8 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
+ * 
+ * https://www.greenscreens.io
+ * 
  */
 package io.greenscreens.websocket;
 
@@ -429,6 +432,7 @@ public class WebSocketOperations<T> {
 		return sts;
 	}
 
+	@SuppressWarnings("deprecation")
 	private ExtJSResponse executeBean(final Bean<?> bean, final AnnotatedMethod<?> method, final Object[] params) {
 
 		ExtJSResponse response = null;

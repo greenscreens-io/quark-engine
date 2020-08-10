@@ -1,7 +1,9 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
- */
-package io.greenscreens.websocket;
+ * 
+ * https://www.greenscreens.io
+ * 
+ */package io.greenscreens.websocket;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

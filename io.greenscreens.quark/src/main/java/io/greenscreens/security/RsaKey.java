@@ -1,5 +1,8 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
+ * 
+ * https://www.greenscreens.io
+ * 
  */
 package io.greenscreens.security;
 

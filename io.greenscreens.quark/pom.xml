@@ -3,7 +3,7 @@
   <groupId>io.greenscreens.quark</groupId>
   <artifactId>quark</artifactId>
   <name>Green Screens Quark Engine</name>
-  <url>https://www.greenscreens/quark</url>
+  <url>https://www.greenscreens.io/quark</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -74,4 +74,9 @@
 	    <version>1.66</version>
 	</dependency>	  	
   </dependencies>
+  <organization>
+  	<name>Green Screens Ltd.</name>
+  	<url>https://www.greenscreens.io</url>
+  </organization>
+  <description>Just as quarks are building blocks which glues subatom particles into atoms, Quark Engine is a small, lite and fast elementary building block between web and Java server side.</description>
 </project>
