@@ -1,5 +1,8 @@
 /*
- * Copyright (C) 2015, 2016  Green Screens Ltd.
+ * Copyright (C) 2015, 2020  Green Screens Ltd.
+ *
+ * https://www.greenscreens.io
+ *
  */
 package io.greenscreens.demo;
 
@@ -14,6 +17,9 @@ import io.greenscreens.websocket.WebsocketDecoderBinary;
 import io.greenscreens.websocket.WebsocketEncoder;
 import io.greenscreens.websocket.WebsocketEncoderBinary;
 
+/**
+ * WebSocket service registered at DemoURLConstants.WSOCKET 
+ */
 @ServerEndpoint(
 		value = DemoURLConstants.WSOCKET,
 		configurator = WebSocketConfigurator.class,

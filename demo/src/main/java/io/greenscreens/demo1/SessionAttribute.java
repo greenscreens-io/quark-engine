@@ -1,5 +1,8 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
+ *
+ * https://www.greenscreens.io
+ *
  */
 package io.greenscreens.demo1;
 
@@ -16,13 +19,13 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
- * Qualifier for session attribute name
+ * Qualifier for session attribute name 
  */
 @Qualifier
 @Retention(RUNTIME)
 @Target({TYPE,METHOD,FIELD, PARAMETER})
 public @interface SessionAttribute {
 
-	@Nonbinding
-	String value() default "";
+   @Nonbinding
+   String value() default "";
 }

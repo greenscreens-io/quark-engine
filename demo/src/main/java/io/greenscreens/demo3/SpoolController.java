@@ -1,5 +1,8 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
+ *
+ * https://www.greenscreens.io
+ *
  */
 package io.greenscreens.demo3;
 
@@ -26,19 +29,19 @@ import io.greenscreens.ext.annotations.ExtJSDirect;
 import io.greenscreens.ext.annotations.ExtJSMethod;
 
 /**
- * Example controller class to work with Spool files
+ * Example controller class to work with Spool files 
  */
 @ExtJSDirect(paths = { DemoURLConstants.WSOCKET, DemoURLConstants.API })
 @ExtJSAction(namespace = DemoURLConstants.NAMESPACE, action = "SPOOL")
 public class SpoolController {
 
-	enum STATE {HOLD, RELEASE}
+	enum STATE {HOLD, RELEASE} 
 
 	private static final Logger LOG = LoggerFactory.getLogger(SpoolController.class);
 
-	@Inject
+	@Inject 
 	AS400 as400;
-
+	
 	/**
 	 * Control that user is authenticated
 	 */
@@ -48,20 +51,20 @@ public class SpoolController {
 			throw new RuntimeException("User not verified!");
 		}
 	}
-
+		
 	/**
 	 * Load spool pages as string and return to the browser
-	 * Use default WSCST for conversion,
+	 * Use default WSCST for conversion, 
 	 * to support different code-pages, custom WSCST is required
 	 * @param data
 	 * @return
 	 */
 	@ExtJSMethod("load")
-	public ExtJSResponse load(final SpoolData data) {
+	public ExtJSResponse load(final SpoolData data) {		
 
 		final ExtJSResponse.Builder builder = ExtJSResponse.Builder.create();
 
-		final SpooledFile file = get(data);
+		final SpooledFile file = get(data);		
 		final PrintParameterList printParms = getCovnertOpt();
 
 		PrintObjectPageInputStream is = null;
@@ -69,8 +72,8 @@ public class SpoolController {
 			is = file.getPageInputStream(printParms);
 
 			final String pages = getPages(is);
-
-			builder.setMessage(pages);
+			
+			builder.setMessage(pages);			
 			builder.setStatus(true);
 		} catch (Exception e) {
 			builder.setMessage(e.getMessage());
@@ -79,7 +82,7 @@ public class SpoolController {
 		} finally {
 			FileUtil.close(is);
 		}
-
+		
 		return builder.build();
 	}
 
@@ -89,12 +92,12 @@ public class SpoolController {
 	 * @return
 	 */
 	@ExtJSMethod("remove")
-	public ExtJSResponse remove(final SpoolData data) {
+	public ExtJSResponse remove(final SpoolData data) {		
 
 		final ExtJSResponse.Builder builder = ExtJSResponse.Builder.create();
-
+		
 		final SpooledFile file = get(data);
-
+		
 		try {
 			file.delete();
 			builder.setStatus(true);
@@ -103,7 +106,7 @@ public class SpoolController {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 		}
-
+		
 		return builder.build();
 	}
 
@@ -114,12 +117,12 @@ public class SpoolController {
 	 * @return
 	 */
 	@ExtJSMethod("move")
-	public ExtJSResponse move(final SpoolData data, final String outq) {
+	public ExtJSResponse move(final SpoolData data, final String outq) {		
 
 		final ExtJSResponse.Builder builder = ExtJSResponse.Builder.create();
-
+		
 		final SpooledFile file = get(data);
-
+		
 		try {
 			final OutputQueue queue = new OutputQueue(as400, outq);
 			file.move(queue);
@@ -129,7 +132,7 @@ public class SpoolController {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 		}
-
+		
 		return builder.build();
 
 	}
@@ -141,19 +144,19 @@ public class SpoolController {
 	 * @return
 	 */
 	@ExtJSMethod("state")
-	public ExtJSResponse state(final SpoolData data, final STATE state) {
+	public ExtJSResponse state(final SpoolData data, final STATE state) {		
 
 		final ExtJSResponse.Builder builder = ExtJSResponse.Builder.create();
-
+		
 		final SpooledFile file = get(data);
-
+		
 		try {
 			switch (state) {
 			case RELEASE:
-				file.release();
+				file.release();				
 				break;
 			case HOLD:
-				file.hold("*IMMED");
+				file.hold("*IMMED");				
 				break;
 			default:
 				break;
@@ -164,18 +167,18 @@ public class SpoolController {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 		}
-
+		
 		return builder.build();
 	}
-
+	
 	/**
 	 * Convert web data into jt400 spooledfile object
 	 * @param data
 	 * @return
 	 */
-	private SpooledFile get(final SpoolData data) {
-		return new SpooledFile(as400, data.getSpoolName(), data.getNumber(),
-				data.getJobName(), data.getJobUser(), data.getJobNumber());
+	private SpooledFile get(final SpoolData data) {	
+		return new SpooledFile(as400, data.getSpoolName(), data.getNumber(), 
+				data.getJobName(), data.getJobUser(), data.getJobNumber());		
 	}
 
 	/**
@@ -183,21 +186,21 @@ public class SpoolController {
 	 * @return
 	 */
 	private PrintParameterList getCovnertOpt() {
-
+		
 		final PrintParameterList printParms = new PrintParameterList();
 
 		// https://www.ibm.com/support/pages/retrieving-and-modifying-wscst-source-qwpdefault
-		printParms.setParameter(PrintObject.ATTR_WORKSTATION_CUST_OBJECT, "/QSYS.LIB/QWPDEFAULT.WSCST");
+		printParms.setParameter(PrintObject.ATTR_WORKSTATION_CUST_OBJECT, "/QSYS.LIB/QWPDEFAULT.WSCST");		
 		printParms.setParameter(PrintObject.ATTR_MFGTYPE, "*WSCST");
 
 		// printParms.setParameter(PrintObject.ATTR_MFGTYPE, "*HP4");
-
+		
 		// printParms.setParameter(PrintObject.ATTR_WORKSTATION_CUST_OBJECT, "/QSYS.LIB/QWPGIF.WSCST");
 		// printParms.setParameter(PrintObject.ATTR_WORKSTATION_CUST_OBJECT, "/QSYS.LIB/QWPTIFFG4.WSCST");
-
+		
 		return printParms;
 	}
-
+	
 	/**
 	 * Read spool file page b page and convert into string
 	 * @param pois
@@ -209,19 +212,19 @@ public class SpoolController {
 		final StringBuilder sb = new StringBuilder();
 
 		boolean hasNext = true;
-
+		
 		while (hasNext) {
-
+				
 			int size = pois.available();
 			byte[] raw = new byte[size];
 			pois.read(raw);
-
+				
 			sb.append(new String(raw, "Cp037"));
 			sb.append((char) 0x0c); // page break
-
+				
 			hasNext = pois.nextPage();
 		}
-
+			
 		return sb.toString();
 	}
 
