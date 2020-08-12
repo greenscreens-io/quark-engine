@@ -508,10 +508,12 @@ public class WebSocketOperations<T> {
 				builder.append(violation.getMessage());
 				builder.append("\n");
 			}
-			
-			throw new Exception(builder.toString());
+
+			factory.close();
+			throw new Exception(builder.toString().trim());
 		}
 		
+		factory.close();
 		
 	}
 }
