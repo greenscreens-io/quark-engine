@@ -9,6 +9,13 @@ package io.greenscreens.demo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import io.greenscreens.cdi.Required;
 import io.greenscreens.ext.ExtJSObjectResponse;
 import io.greenscreens.ext.ExtJSResponse;
 import io.greenscreens.ext.ExtJSResponseList;
@@ -31,14 +38,21 @@ public class DemoController {
 	}
 	
 	@ExtJSMethod("hello")
-	public ExtJSResponse helloWorld(final String name) {
+	public ExtJSResponse helloWorld(@Required final String name) {
 		ExtJSResponse resp = new ExtJSResponse(true, null);
 		resp.setMsg("Hello ".concat(name));
 		return resp;
 	}
 
-	@ExtJSMethod("saveUser")
-	public ExtJSObjectResponse<UserModel> save(final String name, final String email) {
+	@ExtJSMethod(value = "saveUser", validate = true)
+	public ExtJSObjectResponse<UserModel> save(
+			@NotNull 
+			@NotBlank
+			@Min(value = 5, message = "User name is too short!")
+			@Max(value = 20, message = "user name too long!")
+			final String name, 
+			@NotNull @NotBlank @Email
+			final String email) {
 
 		final ExtJSObjectResponse<UserModel> resp = new ExtJSObjectResponse<>(true, null);
 		

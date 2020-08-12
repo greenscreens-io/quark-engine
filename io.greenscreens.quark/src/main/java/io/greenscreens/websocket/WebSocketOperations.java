@@ -2,7 +2,6 @@
  * Copyright (C) 2015, 2020  Green Screens Ltd.
  * 
  * https://www.greenscreens.io
- * 
  */
 package io.greenscreens.websocket;
 
@@ -24,6 +23,10 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.validation.executable.ExecutableValidator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -205,7 +208,7 @@ public class WebSocketOperations<T> {
 				if (error) {
 					response = new ExtJSResponse(false, TnErrors.E0002.getMessage());
 					response.setCode(TnErrors.E0002.getCode());
-				} else {
+				} else {										
 					response = executeBean(bean, selectedMethod, params);
 				}
 			}
@@ -244,7 +247,7 @@ public class WebSocketOperations<T> {
 		} else if (selectedMethod == null) {
 			error = true;
 		}
-
+		
 		return error;
 	}
 
@@ -432,7 +435,6 @@ public class WebSocketOperations<T> {
 		return sts;
 	}
 
-	@SuppressWarnings("deprecation")
 	private ExtJSResponse executeBean(final Bean<?> bean, final AnnotatedMethod<?> method, final Object[] params) {
 
 		ExtJSResponse response = null;
@@ -450,6 +452,8 @@ public class WebSocketOperations<T> {
 				javaMethod.setAccessible(true);
 			}
 
+			validateParameters(beanInstance, javaMethod, params);						
+			
 			Class<?> clazz = javaMethod.getReturnType();
 			Object obj = javaMethod.invoke(beanInstance, params);
 
@@ -479,4 +483,35 @@ public class WebSocketOperations<T> {
 		return response;
 	}
 
+	/**
+	 * Helper method to validate calling method arguments annotated with JSR-380
+	 * @param instance
+	 * @param method
+	 * @param params
+	 * @throws Exception
+	 */
+	public void validateParameters(final Object instance, final Method method, final Object[] params) throws Exception {
+
+		final ExtJSMethod annMethod = method.getAnnotation(ExtJSMethod.class);
+		if (!annMethod.validate()) {
+			return;
+		}
+		
+		final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		final ExecutableValidator validator = factory.getValidator().forExecutables();
+		final Set<ConstraintViolation<Object>> violations = validator.validateParameters(instance, method, params);
+		
+		if (!violations.isEmpty()) {
+			final StringBuilder builder = new StringBuilder();
+			
+			for (ConstraintViolation<Object> violation : violations) {
+				builder.append(violation.getMessage());
+				builder.append("\n");
+			}
+			
+			throw new Exception(builder.toString());
+		}
+		
+		
+	}
 }

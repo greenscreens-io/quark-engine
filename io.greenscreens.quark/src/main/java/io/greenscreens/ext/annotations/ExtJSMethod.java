@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
- * 
  * https://www.greenscreens.io
- * 
  */
 package io.greenscreens.ext.annotations;
 
@@ -28,4 +26,8 @@ public @interface ExtJSMethod {
 
 	@Nonbinding
 	boolean encrypt() default true;
+
+	@Nonbinding
+	boolean validate() default false;
+
 }

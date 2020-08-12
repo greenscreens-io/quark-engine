@@ -11,7 +11,7 @@ SocketChannel = (() => {
 
 	const Decoder = new TextDecoder();
 	const Encoder = new TextEncoder();
-	const Packer = wasm_bindgen || null;
+	const Packer = typeof wasm_bindgen == 'function' ? wasm_bindgen : null;
 
 	var supportCompress = false;
 	var tid = 0;
