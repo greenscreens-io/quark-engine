@@ -10,10 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import io.greenscreens.cdi.Required;
 import io.greenscreens.ext.ExtJSObjectResponse;
@@ -36,7 +35,7 @@ public class DemoController {
 		resp.setMsg("Hello ".concat(name));
 		return resp;
 	}
-	
+
 	@ExtJSMethod("hello")
 	public ExtJSResponse helloWorld(@Required final String name) {
 		ExtJSResponse resp = new ExtJSResponse(true, null);
@@ -46,36 +45,35 @@ public class DemoController {
 
 	@ExtJSMethod(value = "saveUser", validate = true)
 	public ExtJSObjectResponse<UserModel> save(
-			@NotNull 
-			@NotBlank
-			@Min(value = 5, message = "User name is too short!")
-			@Max(value = 20, message = "user name too long!")
-			final String name, 
+			@NotNull @NotBlank
+			@Size(min = 5, max = 20, message = "User must be between 5 and 20 characters long")
+			final String name,
+
 			@NotNull @NotBlank @Email
 			final String email) {
 
 		final ExtJSObjectResponse<UserModel> resp = new ExtJSObjectResponse<>(true, null);
-		
+
 		final UserModel model = getUser(name, email);
 		resp.setData(model);
-		
+
 		return resp;
 	}
-	
+
 	@ExtJSMethod("listUsers")
 	public ExtJSResponseList<UserModel> query() {
-		
+
 		final List<UserModel> list = new ArrayList<>();
-		
+
 		list.add(getUser("John Doe", "john.doe@acme.com"));
 		list.add(getUser("Jane Doe", "jane.doe@acme.com"));
 		list.add(getUser("Mark Smith", "mark.smith@acme.com"));
-		
+
 		final ExtJSResponseList<UserModel> resp = new ExtJSResponseList<>(true);
-		resp.setData(list);		
+		resp.setData(list);	
 		return resp;
 	}
-	
+
 	private UserModel getUser(final String name, final String email) {
 		final UserModel model = new UserModel();
 		model.setId(System.currentTimeMillis());

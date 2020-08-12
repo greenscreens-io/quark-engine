@@ -15,16 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.Nonbinding;
-
-/**
- * Qualifier for session attribute name
- */
 @Retention(RUNTIME)
-@Target({TYPE,METHOD,FIELD, PARAMETER})
-public @interface SessionAttribute {
-
-	@Nonbinding
-	String value() default "";
-
-}
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface Authenticated {}

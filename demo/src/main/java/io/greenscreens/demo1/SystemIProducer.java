@@ -8,10 +8,11 @@ package io.greenscreens.demo1;
 
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -20,17 +21,15 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ibm.as400.access.AS400;
-
 /**
  * Application level instance used to provide AS400 object / httpsession
  */
 @ApplicationScoped
-public class SessionAttributeProducer implements Serializable {
-	
+public class SystemIProducer implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(SessionAttributeProducer.class);	
-	
+	private static final Logger LOG = LoggerFactory.getLogger(SystemIProducer.class);
+
 	@Inject
 	private HttpServletRequest servletRequest;
 
@@ -40,21 +39,15 @@ public class SessionAttributeProducer implements Serializable {
 	 * @return
 	 */
 	@Produces
-	@Default
-	public AS400 sessionAS400AttributeDefault(final InjectionPoint ip) {
-		return produce(ip, AS400.class.getCanonicalName());
-	}
-	
-	/**
-	 * AS400 session level producer with custom attribute name
-	 * @param ip
-	 * @return
-	 */
-	@Produces
-	@SessionAttribute
-	public AS400 sessionAS400Attribute(final InjectionPoint ip) {
-		final SessionAttribute sa = ip.getAnnotated().getAnnotation(SessionAttribute.class);
-		return produce(ip, sa.value());
+	public SystemI sessionAS400AttributeDefault(final InjectionPoint ip) {
+		final Annotated annotated = ip.getAnnotated();
+		final boolean check = annotated.isAnnotationPresent(Authenticated.class);
+		if (!annotated.isAnnotationPresent(SessionAttribute.class)) {
+			return produce(ip, SystemI.class.getCanonicalName(), check);
+		}
+		final SessionAttribute sa = annotated.getAnnotation(SessionAttribute.class);
+		final String key = Optional.of(sa.value()).filter(s -> !s.isEmpty()).orElse(SystemI.class.getCanonicalName()).toString();
+		return produce(ip, key, check);
 	}
 
 	/**
@@ -63,14 +56,20 @@ public class SessionAttributeProducer implements Serializable {
 	 * @param name
 	 * @return
 	 */
-	private AS400 produce(final InjectionPoint ip, final String name) {
+	private SystemI produce(final InjectionPoint ip, final String name, final boolean check) {
 
 		final HttpSession session = servletRequest.getSession();
-		
-		AS400 as400 = (AS400) session.getAttribute(name);
+
+		SystemI as400 = (SystemI) session.getAttribute(name);
 		if (as400 == null) {
 			as400 = getInstance();
 			session.setAttribute(name, as400);
+		}
+
+		if(check) {
+			if (!as400.isValid()) {
+				throw new RuntimeException("User not verified!");
+			}
 		}
 
 		return as400;
@@ -80,8 +79,8 @@ public class SessionAttributeProducer implements Serializable {
 	 * Create new AS400 instance and disable GUi prompt for server side usage
 	 * @return
 	 */
-	private AS400 getInstance() {
-		final AS400 as400 = new AS400();
+	private SystemI getInstance() {
+		final SystemI as400 = new SystemI();
 		try {
 			as400.setGuiAvailable(false);
 		} catch (PropertyVetoException e) {
@@ -90,4 +89,5 @@ public class SessionAttributeProducer implements Serializable {
 		}
 		return as400;
 	}
+
 }
