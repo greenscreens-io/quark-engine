@@ -39,14 +39,19 @@ public class SystemIProducer implements Serializable {
 	 * @return
 	 */
 	@Produces
-	public SystemI sessionAS400AttributeDefault(final InjectionPoint ip) {
+	public SystemI producer(final InjectionPoint ip) {
+
 		final Annotated annotated = ip.getAnnotated();
 		final boolean check = annotated.isAnnotationPresent(Authenticated.class);
+
 		if (!annotated.isAnnotationPresent(SessionAttribute.class)) {
 			return produce(ip, SystemI.class.getCanonicalName(), check);
 		}
+
 		final SessionAttribute sa = annotated.getAnnotation(SessionAttribute.class);
-		final String key = Optional.of(sa.value()).filter(s -> !s.isEmpty()).orElse(SystemI.class.getCanonicalName()).toString();
+		final String key = Optional.of(sa.value()).filter(s -> !s.isEmpty())
+			.orElse(SystemI.class.getCanonicalName()).toString();
+
 		return produce(ip, key, check);
 	}
 
@@ -66,10 +71,8 @@ public class SystemIProducer implements Serializable {
 			session.setAttribute(name, as400);
 		}
 
-		if(check) {
-			if (!as400.isValid()) {
-				throw new RuntimeException("User not verified!");
-			}
+		if(check && !as400.isValid()) {
+			throw new RuntimeException("User not verified!");
 		}
 
 		return as400;
@@ -80,13 +83,16 @@ public class SystemIProducer implements Serializable {
 	 * @return
 	 */
 	private SystemI getInstance() {
+
 		final SystemI as400 = new SystemI();
+
 		try {
 			as400.setGuiAvailable(false);
 		} catch (PropertyVetoException e) {
 			LOG.error(e.getMessage());
 			LOG.debug(e.getMessage(), e);
 		}
+
 		return as400;
 	}
 
