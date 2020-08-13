@@ -11,7 +11,7 @@ package io.greenscreens.demo;
  */
 public enum DemoURLConstants {
 	;
-	
+
 	public static final String NAMESPACE = "io.greenscreens";
 	public static final String WSOCKET = "/socket";
 	public static final String HTTP = "/service";

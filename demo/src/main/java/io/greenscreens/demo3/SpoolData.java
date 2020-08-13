@@ -15,9 +15,9 @@ public class SpoolData {
 	private String jobName;
 	private String jobUser;
 	private String jobNumber;
-	
+
 	public SpoolData() {}
-	
+
 	public String getOutq() {
 		return outq;
 	}

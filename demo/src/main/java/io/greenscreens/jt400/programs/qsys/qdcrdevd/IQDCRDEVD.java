@@ -17,7 +17,7 @@ import io.greenscreens.jt400.interfaces.IJT400Program;
 public interface IQDCRDEVD extends IJT400Program<QDCRDEVD> {
 
 	public static IQDCRDEVD create(final AS400 as400) {
-		return JT400ExtFactory.createProgram(as400, IQDCRDEVD.class);
+		return JT400ExtFactory.create(as400, IQDCRDEVD.class);
 	}
 
 }

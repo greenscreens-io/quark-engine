@@ -16,34 +16,34 @@ import io.greenscreens.jt400.interfaces.IJT400Format;
  */
 @JT400Format(length = 104)
 public class DEVD0100 implements IJT400Format {
-	
+
 	@JT400Format(offset = 0, type = AS400DataType.TYPE_BIN4)
 	protected int bytesReturned;
-	
+
 	@JT400Format(offset = 4, type = AS400DataType.TYPE_BIN4)
 	protected int bytesAvailable;
-	
+
 	@JT400Format(offset = 8, length = 7)
 	protected String date;
-	
+
 	@JT400Format(offset = 15, length = 6)
 	protected String time;
-	
+
 	@JT400Format(offset = 21, length = 10)
 	protected String deviceName;
-	
+
 	@JT400Format(offset = 31, length = 10)
 	protected String deviceCategory;
-	
+
 	@JT400Format(offset = 41, length = 10)
 	protected String onlineAtIPL;
-	
+
 	@JT400Format(offset = 51, length = 50)
 	protected String description;
-	
+
 	@JT400Format(offset = 101, length = 3)
 	protected String reserve;
-	
+
 	public int getBytesReturned() {
 		return bytesReturned;
 	}
@@ -115,12 +115,12 @@ public class DEVD0100 implements IJT400Format {
 	public void setReserve(String reserve) {
 		this.reserve = reserve;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DEVD0100 [bytesReturned=" + bytesReturned + ", bytesAvailable=" + bytesAvailable + ", date=" + date
 				+ ", time=" + time + ", deviceName=" + deviceName + ", deviceCategory=" + deviceCategory
 				+ ", onlineAtIPL=" + onlineAtIPL + ", description=" + description + ", reserve=" + reserve + "]";
 	}
-	 
+
 }

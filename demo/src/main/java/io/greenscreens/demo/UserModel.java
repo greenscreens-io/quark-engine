@@ -11,7 +11,7 @@ public class UserModel {
 	private long id;
 	private String name;
 	private String email;
-	
+
 	public UserModel() {
 		super();
 	}
@@ -61,5 +61,5 @@ public class UserModel {
 			return false;
 		return true;
 	}
-	
+
 }

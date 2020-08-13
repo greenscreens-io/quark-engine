@@ -10,22 +10,22 @@ import io.greenscreens.jt400.annotations.JT400Format;
 
 @JT400Format(length = 177)
 public class DEVD0300 extends DEVD0100 {
-	
+
 	@JT400Format(offset = 104, length = 10)
 	protected String remoteLocationName;
 
 	@JT400Format(offset = 114, length = 10)
 	protected String controllerName;
-	
+
 	@JT400Format(offset = 124, length = 10)
 	protected String jobName;
-	
+
 	@JT400Format(offset = 134, length = 10)
 	protected String userName;
-	
+
 	@JT400Format(offset = 144, length = 6)
 	protected String jobNumber;
-	
+
 	@JT400Format(offset = 150, length = 10)
 	protected String queueName;
 
@@ -98,5 +98,5 @@ public class DEVD0300 extends DEVD0100 {
 	public void setLastActivity(String lastActivity) {
 		this.lastActivity = lastActivity;
 	}
-	
+
 }

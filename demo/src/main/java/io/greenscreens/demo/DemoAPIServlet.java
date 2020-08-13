@@ -16,5 +16,5 @@ import io.greenscreens.web.APIServlet;
 public class DemoAPIServlet extends APIServlet {
 
 	private static final long serialVersionUID = 1L;
-    
+
 }

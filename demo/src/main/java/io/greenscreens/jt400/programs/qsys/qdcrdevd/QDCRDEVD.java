@@ -21,8 +21,8 @@ import io.greenscreens.jt400.interfaces.IJT400Params;
  * Definition for QDCRDEVD program arguments
  */
 @JT400Program(
-		library = "QSYS", 
-		program = "QDCRDEVD", 
+		library = "QSYS",
+		program = "QDCRDEVD",
 		arguments = 5,
 		formats = {
 			DEVD0100.class,
@@ -31,26 +31,26 @@ import io.greenscreens.jt400.interfaces.IJT400Params;
 		})
 public class QDCRDEVD implements IJT400Params {
 
-	@Id(0) @Output 
+	@Id(0) @Output
 	@JT400Argument(type = AS400DataType.TYPE_BYTE_ARRAY)
 	ByteBuffer receiver;
 
 	@Id(1) @Input
 	@JT400Argument(type = AS400DataType.TYPE_BIN4)
 	int length;
-	
-	@Id(2) @Input 
+
+	@Id(2) @Input
 	@JT400Argument(length = 10, type = AS400DataType.TYPE_TEXT)
 	String formatName;
 
-	@Id(3) @Input 
+	@Id(3) @Input
 	@JT400Argument(length = 10, type = AS400DataType.TYPE_TEXT)
 	String deviceName;
-	
+
 	@Id(4) @Input @Output
 	@JT400Argument(type = AS400DataType.TYPE_BYTE_ARRAY)
 	ByteBuffer errorCode;
-	
+
 	public ByteBuffer getReceiver() {
 		return receiver;
 	}
@@ -92,7 +92,7 @@ public class QDCRDEVD implements IJT400Params {
 	}
 
 	public QDCRDEVD() {}
-	
+
 	protected QDCRDEVD(final Builder builder) {
 		this.receiver = builder.receiver;
 		this.length = builder.length;
@@ -118,5 +118,5 @@ public class QDCRDEVD implements IJT400Params {
 	public static QDCRDEVD build(final Class<DEVD0100> clazz, final String displayName) {
 		return Builder.build(clazz, displayName);
 	}
-	
+
 }

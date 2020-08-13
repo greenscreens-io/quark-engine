@@ -18,17 +18,17 @@ import io.greenscreens.websocket.WebsocketEncoder;
 import io.greenscreens.websocket.WebsocketEncoderBinary;
 
 /**
- * WebSocket service registered at DemoURLConstants.WSOCKET 
+ * WebSocket service registered at DemoURLConstants.WSOCKET
  */
 @ServerEndpoint(
 		value = DemoURLConstants.WSOCKET,
 		configurator = WebSocketConfigurator.class,
-        decoders = { WebsocketDecoder.class, WebsocketDecoderBinary.class}, 
-        encoders = { WebsocketEncoder.class, WebsocketEncoderBinary.class})
+		decoders = { WebsocketDecoder.class, WebsocketDecoderBinary.class},
+		encoders = { WebsocketEncoder.class, WebsocketEncoderBinary.class})
 public class DemoAPIWebSocketService extends WebSocketService {
-	
+
 	public void broadcast(@Observes final WebsocketBroadcastEvent wsEvent) {
-    	super.broadcast(wsEvent.getData());
-    }
-	
+		super.broadcast(wsEvent.getData());
+	}
+
 }

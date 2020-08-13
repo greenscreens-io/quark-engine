@@ -11,7 +11,7 @@ import io.greenscreens.jt400.annotations.JT400Format;
 /**
  * Definition for DEVD0600 format - partial.
  * One can define only required data.
- * 
+ *
  * Detailed information for device category *DSP
  */
 @JT400Format(length = 1124)
@@ -19,10 +19,10 @@ public class DEVD0600 extends DEVD0100 {
 
 	@JT400Format(offset = 892, length = 10)
 	protected String jobName;
-	
+
 	@JT400Format(offset = 902, length = 10)
 	protected String userName;
-	
+
 	@JT400Format(offset = 912, length = 10)
 	protected String jobNumber;
 
