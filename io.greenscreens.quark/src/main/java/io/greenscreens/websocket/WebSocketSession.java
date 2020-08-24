@@ -1,13 +1,11 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
- * 
+ *
  * https://www.greenscreens.io
- * 
  */
 package io.greenscreens.websocket;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.security.Principal;
 import java.util.List;
@@ -32,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.greenscreens.security.IAesKey;
-import io.greenscreens.web.TnConstants;
+import io.greenscreens.web.QuarkConstants;
 import io.greenscreens.websocket.data.IWebSocketResponse;
 import io.greenscreens.websocket.data.WebSocketInstruction;
 import io.greenscreens.websocket.data.WebSocketResponse;
@@ -118,8 +116,8 @@ public class WebSocketSession implements Session {
 		try {
 			
 			final Map<String, Object> props = session.getUserProperties();
-			if (props.containsKey( TnConstants.HTTP_SEESION_ENCRYPT )) {
-				final IAesKey aes = (IAesKey) props.get(TnConstants.HTTP_SEESION_ENCRYPT);
+			if (props.containsKey( QuarkConstants.HTTP_SEESION_ENCRYPT )) {
+				final IAesKey aes = (IAesKey) props.get(QuarkConstants.HTTP_SEESION_ENCRYPT);
 				wsResponse.setKey(aes);	
 			}
 			
@@ -266,7 +264,7 @@ public class WebSocketSession implements Session {
 		}
 
 		try {
-			final String attr = (String) httpSession.getAttribute(TnConstants.HTTP_SEESION_STATUS);
+			final String attr = (String) httpSession.getAttribute(QuarkConstants.HTTP_SEESION_STATUS);
 			return Boolean.TRUE.toString().equals(attr);
 		} catch (Exception e) {
 			LOG.debug(e.getMessage(), e);
@@ -281,20 +279,7 @@ public class WebSocketSession implements Session {
 		boolean status = false;
 
 		if (obj instanceof WebSocketSession) {
-
-			try {
-
-				final Field f = WebSocketSession.class.getField("session");
-				f.setAccessible(true);
-
-				final Object o = f.get(obj);
-				status = session.equals(o);
-
-			} catch (Exception e) {
-				status = false;
-				LOG.debug(e.getMessage(), e);
-			}
-
+			status = ((WebSocketSession) obj).hashCode() == hashCode(); 			
 		}
 
 		return status;

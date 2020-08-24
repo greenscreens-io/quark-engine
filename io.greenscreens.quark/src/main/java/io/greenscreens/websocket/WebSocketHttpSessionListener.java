@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import io.greenscreens.web.TnConstants;
+import io.greenscreens.web.QuarkConstants;
 
 /**
  * Set session status flags for WebSOcket service to be able to detect if
@@ -26,13 +26,13 @@ public final class WebSocketHttpSessionListener implements HttpSessionListener, 
 	@Override
 	public void sessionCreated(final HttpSessionEvent event) {
 		final HttpSession httpSession = event.getSession();
-		httpSession.setAttribute(TnConstants.HTTP_SEESION_STATUS, Boolean.TRUE.toString());
+		httpSession.setAttribute(QuarkConstants.HTTP_SEESION_STATUS, Boolean.TRUE.toString());
 	}
 
 	@Override
 	public void sessionDestroyed(final HttpSessionEvent event) {
 		final HttpSession httpSession = event.getSession();
-		httpSession.setAttribute(TnConstants.HTTP_SEESION_STATUS, Boolean.FALSE.toString());
+		httpSession.setAttribute(QuarkConstants.HTTP_SEESION_STATUS, Boolean.FALSE.toString());
 	}
 
 	@Override

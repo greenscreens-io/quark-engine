@@ -71,7 +71,7 @@ public enum ServletUtils {
 				node = JsonDecoder.parse(data);
 
 			} catch (BadPaddingException pe) {
-				LOG.error(TnConstants.LOG_RSA_ERROR);
+				LOG.error(QuarkConstants.LOG_RSA_ERROR);
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				LOG.debug(e.getMessage(), e);
@@ -185,7 +185,7 @@ public enum ServletUtils {
 	 * @param error
 	 * @return
 	 */
-	public static final ObjectNode getResponse(final TnErrors error) {
+	public static final ObjectNode getResponse(final QuarkErrors error) {
 
 		if (error == null) {
 			return getResponse();
@@ -202,7 +202,7 @@ public enum ServletUtils {
 	 * @return
 	 */
 	public static final ObjectNode getResponse(final boolean sts, final String error) {
-		return getResponse(sts, error, TnErrors.E9999.getCode());
+		return getResponse(sts, error, QuarkErrors.E9999.getCode());
 	}
 
 	/**

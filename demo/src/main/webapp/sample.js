@@ -3,26 +3,26 @@
  */
 
 /**
- * Demo showing remote API calls through WebSocket or http/s fetch  
+ * Demo showing remote API calls through WebSocket or http/s fetch
  *
- * NOTE: Engine.init should be used only once to initialize 
- *       Here it is used in every function only for testing purposes  
- * 
- * api - used to retrieve API definitions 
+ * NOTE: Engine.init should be used only once to initialize
+ *       Here it is used in every function only for testing purposes
+ *
+ * api - used to retrieve API definitions
  * ws - used for API service call
- * 
- *  NOTE: if *api* used as a service call, 
+ *
+ *  NOTE: if *api* used as a service call,
  *  http/s protocol will be used instead of WebSocket protocol.
- *  
+ *
  *   This engine supports both channels
  */
 
-const isSecured  = location.protocol === "https:";
-const wsProtocol = isSecured === true ? 'wss':'ws';
-const ws    = `${wsProtocol}://${location.host}/io.greenscreens.quark/socket`;
-const api   = `${location.origin}/io.greenscreens.quark/api`;
+const isSecured = location.protocol === "https:";
+const wsProtocol = isSecured === true ? 'wss' : 'ws';
+const ws = `${wsProtocol}://${location.host}/io.greenscreens.quark/socket`;
+const api = `${location.origin}/io.greenscreens.quark/api`;
 
-const msg   = 'This is a test for encrypting đšžćčĐŠŽČ';
+const msg = 'This is a test for encrypting đšžćčĐŠŽČ';
 
 /**
  * Empty call without network channels
@@ -33,34 +33,43 @@ async function test1() {
 	let def = await res.json();
 	await Generator.build(def.api);
 
-    Generator.on('call', function(o, cb){o.result={success:true, data: {}};cb(null, o)});
+	Generator.on('call', function(o, cb) {
+		o.result = {
+			success: true,
+			data: {}
+		};
+		cb(null, o)
+	});
 
-    try {
-        let res = await io.greenscreens.Demo.hello('John Doe');
-        console.log(res);
-    } catch (e) {
-        console.log(e);
-    }
+	try {
+		let res = await io.greenscreens.Demo.hello('John Doe');
+		console.log(res);
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 /**
  * Sample to initialize engine with Promises call
- * Connector is http servlet 
+ * Connector is http servlet
  */
 function test2() {
 
-    Engine.init({api: api, service:api})
-    .then(() => {
-        console.log('Engine ready');
-        return io.greenscreens.Demo.hello('John Doe');
-    })
-    .then((o) => {
-        console.log('API call result');
-        console.log(o);
-    })
-    .catch((e) => {
-        console.log(e.message || e.msg || e);
-    });    
+	Engine.init({
+			api: api,
+			service: api
+		})
+		.then(() => {
+			console.log('Engine ready');
+			return io.greenscreens.Demo.hello('John Doe');
+		})
+		.then((o) => {
+			console.log('API call result');
+			console.log(o);
+		})
+		.catch((e) => {
+			console.log(e.message || e.msg || e);
+		});
 
 }
 
@@ -71,16 +80,19 @@ function test2() {
 async function test3() {
 
 	let data = null;
-	
-    await Engine.init({api: api, service:api});
+
+	await Engine.init({
+		api: api,
+		service: api
+	});
 
 	// encryption enabled by default (see DemoController.java)
-    data = await io.greenscreens.Demo.hello('John Doe');
-    console.log(data);
+	data = await io.greenscreens.Demo.hello('John Doe');
+	console.log(data);
 
 	// encryption disabled (see DemoController.java)
-    data = await io.greenscreens.Demo.helloUnsafe('John Doe');
-    console.log(data);
+	data = await io.greenscreens.Demo.helloUnsafe('John Doe');
+	console.log(data);
 }
 
 /**
@@ -88,16 +100,21 @@ async function test3() {
  */
 async function test4() {
 
-    if (!Security.isActive()) {
+	if (!Security.isActive()) {
 		let challenge = Date.now();
-		let res = await fetch(api, { method: 'get', headers: { 'x-time': challenge } });
+		let res = await fetch(api, {
+			method: 'get',
+			headers: {
+				'x-time': challenge
+			}
+		});
 		let def = await res.json();
 		def.challenge = challenge;
-		await Security.init(def);		
+		await Security.init(def);
 	}
-			
-    let enc = await Security.encrypt(msg);
-    console.log(enc);
+
+	let enc = await Security.encrypt(msg);
+	console.log(enc);
 }
 
 /**
@@ -106,12 +123,15 @@ async function test4() {
  */
 async function test5() {
 
-    await Engine.init({api: api, service:ws});
+	await Engine.init({
+		api: api,
+		service: ws
+	});
 
 	// no encryption on request as no data (parameter on functon)
 	// response is encrypted
-    let data = await io.greenscreens.Demo.saveUser('John Doe', 'john.doe@acme.com');
-    console.log(data);
+	let data = await io.greenscreens.Demo.saveUser('John Doe', 'john.doe@acme.com');
+	console.log(data);
 }
 
 /**
@@ -120,10 +140,13 @@ async function test5() {
  */
 async function test6() {
 
-    await Engine.init({api: api, service:ws});
+	await Engine.init({
+		api: api,
+		service: ws
+	});
 
-    let data = await io.greenscreens.Demo.listUsers();
-    console.log(data);
+	let data = await io.greenscreens.Demo.listUsers();
+	console.log(data);
 }
 
 /**
@@ -132,56 +155,68 @@ async function test6() {
  */
 async function test7() {
 
-    await Engine.init({api: api, service:ws});
+	await Engine.init({
+		api: api,
+		service: ws
+	});
 
 	let i = 10;
-	while(i--) {
-      let data = await io.greenscreens.Demo.hello('John Doe call: ' + i);
-      console.log(data);		
+	while (i--) {
+		let data = await io.greenscreens.Demo.hello('John Doe call: ' + i);
+		console.log(data);
 	}
 
 }
 
 /**
- * Test multiple calls 
+ * Test multiple calls
  * Connector and API is WebSocket service
  */
 async function test8() {
 
-    await Engine.init({api: ws, service:ws});
+	await Engine.init({
+		api: ws,
+		service: ws
+	});
 
 	let i = 10;
-	while(i--) {
-      let data = await io.greenscreens.Demo.hello('John Doe call: ' + i);
-      console.log(data);		
+	while (i--) {
+		let data = await io.greenscreens.Demo.hello('John Doe call: ' + i);
+		console.log(data);
 	}
 
 }
 
 /**
- * Test io.greenscreens.demo2 package (JT400) 
+ * Test io.greenscreens.demo2 package (JT400)
  */
 async function test9() {
 
-    await Engine.init({api: ws, service:ws});
-	
-	let data = await io.greenscreens.AS400.login('YOUR_SYSTEM', 'QSECOFR', 'QSECOFR');	
+	await Engine.init({
+		api: ws,
+		service: ws
+	});
+
+	let data = await io.greenscreens.AS400.login('YOUR_SYSTEM', 'QSECOFR', 'QSECOFR');
 	console.log(data);
 	await io.greenscreens.AS400.logout();
 }
 
 /**
- * Test io.greenscreens.demo3 package (JT400 + IFS) 
+ * Test io.greenscreens.demo3 package (JT400 + IFS)
  */
 async function test9() {
 
-    await Engine.init({api: ws, service:ws});
-	
-	let data = await io.greenscreens.AS400.login('YOUR_SYSTEM', 'QSECOFR', 'QSECOFR');	
+	await Engine.init({
+		api: ws,
+		service: ws
+	});
+
+	let data = await io.greenscreens.AS400.login('YOUR_SYSTEM', 'QSECOFR', 'QSECOFR');
 	console.log(data);
-	
+
 	let ifs = await io.greenscreens.IFS.list('/');
 	console.log(ifs);
-	
+
 	await io.greenscreens.AS400.logout();
 }

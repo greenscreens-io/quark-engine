@@ -36,7 +36,7 @@ import io.greenscreens.cdi.BeanManagerUtil;
 import io.greenscreens.ext.ExtJSDirectRequest;
 import io.greenscreens.ext.ExtJSDirectResponse;
 import io.greenscreens.ext.ExtJSResponse;
-import io.greenscreens.web.TnConstants;
+import io.greenscreens.web.QuarkConstants;
 import io.greenscreens.websocket.data.IWebSocketResponse;
 import io.greenscreens.websocket.data.WebSocketInstruction;
 import io.greenscreens.websocket.data.WebSocketRequest;
@@ -108,7 +108,7 @@ public class WebSocketEndpoint {
 
 		try {
 
-			if (!TnConstants.WEBSOCKET_TYPE.equals(message.getType())) {
+			if (!QuarkConstants.WEBSOCKET_TYPE.equals(message.getType())) {
 				return;
 			}
 
@@ -173,8 +173,8 @@ public class WebSocketEndpoint {
 
 			boolean requireSession = false;
 
-			if (sessProps.containsKey(TnConstants.WEBSOCKET_SESSION)) {
-				requireSession = (boolean) sessProps.get(TnConstants.WEBSOCKET_SESSION);
+			if (sessProps.containsKey(QuarkConstants.WEBSOCKET_SESSION)) {
+				requireSession = (boolean) sessProps.get(QuarkConstants.WEBSOCKET_SESSION);
 			}
 
 			final HttpSession httpSession = (HttpSession) endpProps.get(HttpSession.class.getName());
@@ -184,7 +184,7 @@ public class WebSocketEndpoint {
 			// session.setMaxIdleTimeout(MINUTE * 30);
 			session.setMaxIdleTimeout(0);
 
-			sessProps.put(TnConstants.WEBSOCKET_PATH, endpProps.get(TnConstants.WEBSOCKET_PATH));
+			sessProps.put(QuarkConstants.WEBSOCKET_PATH, endpProps.get(QuarkConstants.WEBSOCKET_PATH));
 
 			websocketContextThreadLocal.set(wsession);
 
@@ -215,7 +215,7 @@ public class WebSocketEndpoint {
 
 			updateSessions(wsession);
 
-			if (session.getUserProperties().containsKey(TnConstants.WEBSOCKET_CHALLENGE)) {
+			if (session.getUserProperties().containsKey(QuarkConstants.WEBSOCKET_CHALLENGE)) {
 				sendAPI(wsession);	
 			}
 			
@@ -292,11 +292,11 @@ public class WebSocketEndpoint {
 		
 		if (BM == null) return false;
 		
-		if (!session.getUserProperties().containsKey(TnConstants.WEBSOCKET_CHALLENGE)) {
+		if (!session.getUserProperties().containsKey(QuarkConstants.WEBSOCKET_CHALLENGE)) {
 			return false;
 		}
 		
-		final String challenge = (String) session.getUserProperties().get(TnConstants.WEBSOCKET_CHALLENGE);
+		final String challenge = (String) session.getUserProperties().get(QuarkConstants.WEBSOCKET_CHALLENGE);
 		final WebSocketResponse wsResposne = new WebSocketResponse(WebSocketInstruction.API);		
 		
 		final ArrayNode api = BM.getAPI();
@@ -328,7 +328,7 @@ public class WebSocketEndpoint {
 
 		final List<ExtJSDirectResponse<?>> responseList = new ArrayList<ExtJSDirectResponse<?>>();
 		final Map<String, Object> map = session.getUserProperties();
-		final String wsPath = (String) map.get(TnConstants.WEBSOCKET_PATH);
+		final String wsPath = (String) map.get(QuarkConstants.WEBSOCKET_PATH);
 		final List<ExtJSDirectRequest<JsonNode>> requests = wsMessage.getData();
 
 		for (final ExtJSDirectRequest<JsonNode> request : requests) {

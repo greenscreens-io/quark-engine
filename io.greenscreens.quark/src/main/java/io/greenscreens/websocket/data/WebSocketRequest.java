@@ -9,14 +9,14 @@ package io.greenscreens.websocket.data;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.greenscreens.ext.ExtJSDirectRequest;
-import io.greenscreens.web.TnConstants;
+import io.greenscreens.web.QuarkConstants;
 
 /**
  * Class used to map JSON structure describing ExtJS WebSocket request.
  */
 public class WebSocketRequest {
 
-	public final String type = TnConstants.WEBSOCKET_TYPE;
+	public final String type = QuarkConstants.WEBSOCKET_TYPE;
 
 	private WebSocketInstruction cmd; // 'welcome , bye, data' ,
 	private int timeout; // set only when cmd=welcome

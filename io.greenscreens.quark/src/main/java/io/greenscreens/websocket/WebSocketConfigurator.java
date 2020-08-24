@@ -18,7 +18,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 
 import io.greenscreens.Util;
-import io.greenscreens.web.TnConstants;
+import io.greenscreens.web.QuarkConstants;
 import io.greenscreens.web.listener.SessionCollector;
 
 /**
@@ -37,7 +37,7 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
 
 	@Override
 	public final String getNegotiatedSubprotocol(final List<String> supported, final List<String> requested) {
-		return TnConstants.WEBSOCKET_SUBPROTOCOL;
+		return QuarkConstants.WEBSOCKET_SUBPROTOCOL;
 	}
 
 	private String findChallenge(final HandshakeRequest request) {
@@ -121,7 +121,7 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
 		final Map<String, Object> map = sec.getUserProperties();
 
 		if (httpSession == null) {
-			int token = findSessionToken(request);
+			final int token = findSessionToken(request);
 			httpSession = SessionCollector.get(token);
 		}
 
@@ -130,11 +130,11 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
 		}
 
 		map.put(Locale.class.getCanonicalName(), getLocale(request));
-		map.put(TnConstants.WEBSOCKET_PATH, sec.getPath());
+		map.put(QuarkConstants.WEBSOCKET_PATH, sec.getPath());
 		
 		final String challenge = findChallenge(request);
 		if (challenge != null) {
-			map.put(TnConstants.WEBSOCKET_CHALLENGE, challenge);
+			map.put(QuarkConstants.WEBSOCKET_CHALLENGE, challenge);
 		}
 	}
 

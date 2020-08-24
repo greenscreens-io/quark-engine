@@ -138,11 +138,11 @@ public class APIServlet extends HttpServlet {
 		encrypt.setK(node.get("k").asText());
 
 		final HttpSession session = request.getSession(true);
-		IAesKey crypt = (IAesKey) session.getAttribute(TnConstants.HTTP_SEESION_ENCRYPT);
+		IAesKey crypt = (IAesKey) session.getAttribute(QuarkConstants.HTTP_SEESION_ENCRYPT);
 
 		if (crypt == null) {
 			crypt = Security.initAESfromRSA(encrypt.getK());
-			session.setAttribute(TnConstants.HTTP_SEESION_ENCRYPT, crypt);
+			session.setAttribute(QuarkConstants.HTTP_SEESION_ENCRYPT, crypt);
 			data = crypt.decrypt(encrypt.getD());
 		} else {
 			data = Security.decodeRequest(encrypt.getD(), encrypt.getK(), crypt);
@@ -163,7 +163,7 @@ public class APIServlet extends HttpServlet {
 	 */
 	private final String encrypt(final HttpServletRequest request, final String data) throws Exception {
 
-		final IAesKey crypt = (IAesKey) request.getSession().getAttribute(TnConstants.HTTP_SEESION_ENCRYPT);
+		final IAesKey crypt = (IAesKey) request.getSession().getAttribute(QuarkConstants.HTTP_SEESION_ENCRYPT);
 		if (crypt == null) {
 			return data;
 		}

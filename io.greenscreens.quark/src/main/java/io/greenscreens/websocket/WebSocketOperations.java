@@ -49,8 +49,8 @@ import io.greenscreens.ext.annotations.ExtJSDirect;
 import io.greenscreens.ext.annotations.ExtJSMethod;
 import io.greenscreens.security.IAesKey;
 import io.greenscreens.security.Security;
-import io.greenscreens.web.TnConstants;
-import io.greenscreens.web.TnErrors;
+import io.greenscreens.web.QuarkConstants;
+import io.greenscreens.web.QuarkErrors;
 import io.greenscreens.websocket.data.WebSocketInstruction;
 
 /**
@@ -85,12 +85,12 @@ public class WebSocketOperations<T> {
 	 */
 	private String decryptData(final WebSocketSession session, final ExtEncrypt encrypt) throws Exception {
 
-		IAesKey crypt = (IAesKey) session.getUserProperties().get(TnConstants.HTTP_SEESION_ENCRYPT);
+		IAesKey crypt = (IAesKey) session.getUserProperties().get(QuarkConstants.HTTP_SEESION_ENCRYPT);
 		String data = null;
 
 		if (crypt == null) {
 			crypt = Security.initAESfromRSA(encrypt.getK());
-			session.getUserProperties().put(TnConstants.HTTP_SEESION_ENCRYPT, crypt);
+			session.getUserProperties().put(QuarkConstants.HTTP_SEESION_ENCRYPT, crypt);
 			data = crypt.decrypt(encrypt.getD());
 		} else {
 			data = Security.decodeRequest(encrypt.getD(), encrypt.getK(), crypt);
@@ -120,8 +120,8 @@ public class WebSocketOperations<T> {
 			final int size = request.getData() == null ? 0 : request.getData().size();
 
 			if (size == 0) {
-				response = new ExtJSResponse(false, TnErrors.E0000.getMessage());
-				response.setCode(TnErrors.E0000.getCode());
+				response = new ExtJSResponse(false, QuarkErrors.E0000.getMessage());
+				response.setCode(QuarkErrors.E0000.getCode());
 			} else {
 
 				final Object paramData = request.getData().get(0);
@@ -152,8 +152,8 @@ public class WebSocketOperations<T> {
 					directResponse = process(request, session.getHttpSession(), uri);
 
 				} else {
-					response = new ExtJSResponse(false, TnErrors.E0000.getMessage());
-					response.setCode(TnErrors.E0000.getCode());
+					response = new ExtJSResponse(false, QuarkErrors.E0000.getMessage());
+					response.setCode(QuarkErrors.E0000.getCode());
 				}
 			}
 
@@ -198,16 +198,16 @@ public class WebSocketOperations<T> {
 			boolean error = checkForError(annType, selectedMethod, direct, session, uri);
 
 			if (error) {
-				response = new ExtJSResponse(false, TnErrors.E0001.getString());
-				response.setCode(TnErrors.E0001.getCode());
+				response = new ExtJSResponse(false, QuarkErrors.E0001.getString());
+				response.setCode(QuarkErrors.E0001.getCode());
 			} else {
 				final List<AnnotatedParameter<?>> paramList = selectedMethod.getParameters();
 				final Object[] params = fillParams(request, paramList);
 
 				error = isParametersInvalid(paramList, params);
 				if (error) {
-					response = new ExtJSResponse(false, TnErrors.E0002.getMessage());
-					response.setCode(TnErrors.E0002.getCode());
+					response = new ExtJSResponse(false, QuarkErrors.E0002.getMessage());
+					response.setCode(QuarkErrors.E0002.getCode());
 				} else {										
 					response = executeBean(bean, selectedMethod, params);
 				}
@@ -277,7 +277,7 @@ public class WebSocketOperations<T> {
 			return false;
 		}
 
-		final String attr = (String) httpSession.getAttribute(TnConstants.HTTP_SEESION_STATUS);
+		final String attr = (String) httpSession.getAttribute(QuarkConstants.HTTP_SEESION_STATUS);
 		return Boolean.TRUE.toString().equalsIgnoreCase(attr);
 	}
 

@@ -9,7 +9,7 @@ package io.greenscreens.websocket.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.greenscreens.security.IAesKey;
-import io.greenscreens.web.TnConstants;
+import io.greenscreens.web.QuarkConstants;
 
 /**
  * Object to be converted into JSON structure. {type :'ws' , sid : session_id ,
@@ -17,7 +17,7 @@ import io.greenscreens.web.TnConstants;
  */
 public class WebSocketResponseBinary implements IWebSocketResponse {
 
-	private String type = TnConstants.WEBSOCKET_TYPE;
+	private String type = QuarkConstants.WEBSOCKET_TYPE;
 
 	private final WebSocketInstruction cmd;
 
