@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import io.greenscreens.quark.cdi.BeanManagerUtil;
 import io.greenscreens.quark.websocket.WebSocketEndpoint;
 import io.greenscreens.quark.websocket.WebSocketService;
+import io.greenscreens.quark.websocket.WebSocketSession;
 
 public class QuarkExtension implements Extension {
 
@@ -29,7 +30,7 @@ public class QuarkExtension implements Extension {
 	}
 
 	void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager bm) {
-		LOG.debug("finished the scanning process");
+		LOG.debug("finished the scanning process");	
 		if (bm.getBeans(BeanManagerUtil.class).isEmpty()) {
 			register(event, bm, BeanManagerUtil.class).scope(ApplicationScoped.class);
 		}
@@ -39,12 +40,15 @@ public class QuarkExtension implements Extension {
 		if (bm.getBeans(WebSocketEndpoint.class).isEmpty()) {
 			register(event, bm, WebSocketEndpoint.class);
 		}
+		if (bm.getBeans(WebSocketSession.class).isEmpty()) {
+			register(event, bm, WebSocketSession.class)
+			.createWith(e-> WebSocketEndpoint.get());
+		}
 	}
 
 	private <T> BeanConfigurator<T> register(final AfterBeanDiscovery event, final BeanManager bm, final Class<T> clazz) {
 		return event.addBean()
-		.read(bm.createAnnotatedType(clazz))
-		.beanClass(clazz);
+        .read(bm.createAnnotatedType(clazz))
+        .beanClass(clazz);
 	}
-
 }
