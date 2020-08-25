@@ -378,4 +378,8 @@ public class WebSocketEndpoint {
 		}
 	}
 
+	public static WebSocketSession get() {
+		return websocketContextThreadLocal.get();
+	}
+	
 }

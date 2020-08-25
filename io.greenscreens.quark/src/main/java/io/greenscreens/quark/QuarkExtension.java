@@ -30,16 +30,21 @@ public class QuarkExtension implements Extension {
 	}
 
 	void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager bm) {
-		LOG.debug("finished the scanning process");	
+
+		LOG.debug("finished the scanning process");
+
 		if (bm.getBeans(BeanManagerUtil.class).isEmpty()) {
 			register(event, bm, BeanManagerUtil.class).scope(ApplicationScoped.class);
 		}
+
 		if (bm.getBeans(WebSocketService.class).isEmpty()) {
 			register(event, bm, WebSocketService.class);
 		}
+
 		if (bm.getBeans(WebSocketEndpoint.class).isEmpty()) {
 			register(event, bm, WebSocketEndpoint.class);
 		}
+
 		if (bm.getBeans(WebSocketSession.class).isEmpty()) {
 			register(event, bm, WebSocketSession.class)
 			.createWith(e-> WebSocketEndpoint.get());
