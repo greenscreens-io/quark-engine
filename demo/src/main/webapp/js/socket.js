@@ -165,9 +165,9 @@ SocketChannel = (() => {
 			data = await Security.decrypt(obj);
 
 			if (data) {
-				onMessage(data);
+			  return doData(data);
 			}
-			return; 
+
 		}
 		
 		Engine.emit('message', obj);
@@ -210,6 +210,8 @@ SocketChannel = (() => {
 			} finally {
 				queue[obj.tid] = null;
 			}
+		} else {
+			Engine.emit('message', obj);
 		}
 
 		cleanQueue();

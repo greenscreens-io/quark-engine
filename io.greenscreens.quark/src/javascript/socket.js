@@ -7,7 +7,7 @@
  */
 
 if (typeof module !== 'undefined') {
-	module.exports = SocketChannel;
+  module.exports = SocketChannel;
 }
 
 /**
@@ -150,7 +150,7 @@ SocketChannel = (() => {
 		if (obj.cmd === 'api') {
 			return Generator.emit('api', obj.data);
 		}
-
+		
 		if (obj.cmd === 'err') {
 			return Generator.emit('error', obj.result);
 		}
@@ -165,11 +165,11 @@ SocketChannel = (() => {
 			data = await Security.decrypt(obj);
 
 			if (data) {
-				onMessage(data);
+			  return doData(data);
 			}
-			return;
-		}
 
+		}
+		
 		Engine.emit('message', obj);
 	}
 
@@ -210,6 +210,8 @@ SocketChannel = (() => {
 			} finally {
 				queue[obj.tid] = null;
 			}
+		} else {
+			Engine.emit('message', obj);
 		}
 
 		cleanQueue();
