@@ -3,7 +3,15 @@
  */
 
 /**
- * Web and WebSocket API engine
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+  module.exports = Engine;
+}
+
+/**
+ * Web and WebSocket API engine 
  * Used to initialize remote API and remote services.
  */
 Engine = (() => {
@@ -20,7 +28,7 @@ Engine = (() => {
 		if (!cfg.api) {
 			throw new Error('API Url not defined!');
 		}
-
+		
 		// remove all existing listeners
 		Generator.off('call');
 
@@ -30,13 +38,13 @@ Engine = (() => {
 		}
 
 		let isWSChannel = cfg.api === cfg.service && cfg.api.indexOf('ws') == 0;
-
+		
 		if (isWSChannel) {
 			return await fromWebSocketChannel(cfg);
 		}
 
 		await fromWebChannel(cfg);
-		let sts = await initService(cfg);
+		let sts = await initService(cfg); 
 		if (sts) return true;
 
 		throw new Error(ERROR_MESSAGE);
@@ -62,7 +70,7 @@ Engine = (() => {
 
 		// register WebSocket channel for API
 		if (cfg.service.indexOf('ws') === 0) {
-			await SocketChannel.init(cfg.service);
+			await SocketChannel.init(cfg.service, cfg.wasm);
 			return true;
 		}
 
@@ -81,24 +89,24 @@ Engine = (() => {
 		return new Promise((resolve, reject) => {
 
 			var challenge = Date.now();
-
+	
 			Generator.once('api', async (data) => {
-
+				
 				data.challenge = challenge;
 				try {
 					await registerAPI(data);
-					resolve(true);
-				} catch (e) {
+					resolve(true);					
+				} catch(e) {
 					reject(e);
 				}
 
 			});
-
-			SocketChannel.init(cfg.service + '?q=' + challenge);
+	
+			SocketChannel.init(cfg.service + '?q=' + challenge, cfg.wasm);
 
 			return null;
 		});
-
+		
 	}
 
 	/**
@@ -113,9 +121,9 @@ Engine = (() => {
 	}
 
 	/**
-	 * Register callers from API definition
+	 * Register callers from API definition 
 	 *
-	 * @param {Object} data
+	 * @param {Object} data  
 	 * 		  API definitions receive from server
 	 */
 	async function registerAPI(data) {
@@ -133,7 +141,7 @@ Engine = (() => {
 	/**
 	 * Get API definition through HTTP/s channel
 	 *
-	 * @param {String} url
+	 * @param {String} url  
 	 * 		  URL Address for API service definitions
 	 */
 	async function getAPI(url) {
@@ -142,12 +150,7 @@ Engine = (() => {
 		let service = url ? url : (location.origin + `/${app}/api`);
 		let id = Date.now();
 
-		let resp = await fetch(service, {
-			method: 'get',
-			headers: {
-				'x-time': id
-			}
-		});
+		let resp = await fetch(service, { method: 'get', headers: { 'x-time': id } });
 		let data = await resp.json();
 
 		// update local challenge for signature verificator
@@ -157,9 +160,9 @@ Engine = (() => {
 
 	}
 
-	/**
-	 * Exported object with external methods
-	 */
+    /**
+     * Exported object with external methods
+     */
 	var exported = {
 
 		init: function(cfg) {

@@ -14,18 +14,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.greenscreens.cdi.Required;
-import io.greenscreens.ext.ExtJSObjectResponse;
-import io.greenscreens.ext.ExtJSResponse;
-import io.greenscreens.ext.ExtJSResponseList;
-import io.greenscreens.ext.annotations.ExtJSAction;
-import io.greenscreens.ext.annotations.ExtJSDirect;
-import io.greenscreens.ext.annotations.ExtJSMethod;
+import io.greenscreens.quark.cdi.Required;
+import io.greenscreens.quark.ext.ExtJSObjectResponse;
+import io.greenscreens.quark.ext.ExtJSResponse;
+import io.greenscreens.quark.ext.ExtJSResponseList;
+import io.greenscreens.quark.ext.annotations.ExtJSAction;
+import io.greenscreens.quark.ext.annotations.ExtJSDirect;
+import io.greenscreens.quark.ext.annotations.ExtJSMethod;
 
 /**
  * Example controller class mapped to JavaScript functions
  */
-@ExtJSDirect(paths = { DemoURLConstants.WSOCKET, DemoURLConstants.API })
+@ExtJSDirect(paths = {   DemoURLConstants.WSOCKET, DemoURLConstants.API })
 @ExtJSAction(namespace = DemoURLConstants.NAMESPACE, action = "Demo")
 public class DemoController {
 
@@ -70,7 +70,7 @@ public class DemoController {
 		list.add(getUser("Mark Smith", "mark.smith@acme.com"));
 
 		final ExtJSResponseList<UserModel> resp = new ExtJSResponseList<>(true);
-		resp.setData(list);	
+		resp.setData(list);
 		return resp;
 	}
 
@@ -82,4 +82,5 @@ public class DemoController {
 		return model;
 
 	}
+
 }

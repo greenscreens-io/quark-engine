@@ -3,6 +3,14 @@
  */
 
 /**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+	module.exports = Engine;
+}
+
+/**
  * Web and WebSocket API engine
  * Used to initialize remote API and remote services.
  */
@@ -62,7 +70,7 @@ Engine = (() => {
 
 		// register WebSocket channel for API
 		if (cfg.service.indexOf('ws') === 0) {
-			await SocketChannel.init(cfg.service);
+			await SocketChannel.init(cfg.service, cfg.wasm);
 			return true;
 		}
 
@@ -94,7 +102,7 @@ Engine = (() => {
 
 			});
 
-			SocketChannel.init(cfg.service + '?q=' + challenge);
+			SocketChannel.init(cfg.service + '?q=' + challenge, cfg.wasm);
 
 			return null;
 		});

@@ -3,6 +3,14 @@
  */
 
 /**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+	module.exports = SocketChannel;
+}
+
+/**
  * Web and WebSocket API engine
  * Used to call remote services.
  * All Direct functions linked to io.greenscreens namespace
@@ -149,7 +157,7 @@ SocketChannel = (() => {
 
 		if (obj.cmd === 'data') {
 			obj = obj.data;
-			doData(obj);
+			return doData(obj);
 		}
 
 		if (obj.cmd === 'enc') {
@@ -157,10 +165,12 @@ SocketChannel = (() => {
 			data = await Security.decrypt(obj);
 
 			if (data) {
-				doData(data);
+				onMessage(data);
 			}
-
+			return;
 		}
+
+		Engine.emit('message', obj);
 	}
 
 	/**

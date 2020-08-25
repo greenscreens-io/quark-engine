@@ -3,6 +3,14 @@
  */
 
 /**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+	module.exports = WebChannel;
+}
+
+/**
  * Web Requester Engine
  * Used to call remote services through HTTP/S
  */

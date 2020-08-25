@@ -3,6 +3,14 @@
  */
 
 /**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+	module.exports = Generator;
+}
+
+/**
  * Web and WebSocket API engine
  * Used to call remote services.
  * All Direct functions linked to defiend namespace

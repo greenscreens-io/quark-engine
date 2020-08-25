@@ -3,6 +3,14 @@
  */
 
 /**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+	module.exports = Security;
+}
+
+/**
  * Security engine using Web Crypto API to encrypt / decrypt
  * messages between browser and server.
  *

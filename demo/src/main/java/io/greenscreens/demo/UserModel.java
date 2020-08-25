@@ -1,19 +1,16 @@
 /*
  * Copyright (C) 2015, 2020  Green Screens Ltd.
- *
- * https://www.greenscreens.io
- *
  */
 package io.greenscreens.demo;
 
 public class UserModel {
-
+ 
 	private long id;
 	private String name;
 	private String email;
-
+	
 	public UserModel() {
-		super();
+		super(); 
 	}
 
 	public long getId() {
@@ -61,5 +58,5 @@ public class UserModel {
 			return false;
 		return true;
 	}
-
+	
 }
