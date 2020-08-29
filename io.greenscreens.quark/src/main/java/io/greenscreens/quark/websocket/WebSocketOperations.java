@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
+import javax.validation.ElementKind;
+import javax.validation.Path.Node;
+import javax.validation.Path.ParameterNode;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.executable.ExecutableValidator;
@@ -47,6 +51,7 @@ import io.greenscreens.quark.ext.ExtJSResponse;
 import io.greenscreens.quark.ext.annotations.ExtJSActionLiteral;
 import io.greenscreens.quark.ext.annotations.ExtJSDirect;
 import io.greenscreens.quark.ext.annotations.ExtJSMethod;
+import io.greenscreens.quark.ext.annotations.ExtName;
 import io.greenscreens.quark.security.IAesKey;
 import io.greenscreens.quark.security.Security;
 import io.greenscreens.quark.web.QuarkConstants;
@@ -498,15 +503,32 @@ public final class WebSocketOperations<T> {
 			final StringBuilder builder = new StringBuilder();
 			
 			for (ConstraintViolation<Object> violation : violations) {
+				
+				final Iterator<Node> it = violation.getPropertyPath().iterator();
+				
+				while (it.hasNext()) {	
+				
+					final Node node = it.next();
+					if (node.getKind() != ElementKind.PARAMETER) continue;
+
+					final ParameterNode pNode = (ParameterNode) node;
+					final int index = pNode.getParameterIndex();
+					final Parameter par = method.getParameters()[(int) index];
+					final ExtName name = par.getAnnotation(ExtName.class);
+					
+					if (name != null) {
+						builder.append(par.getAnnotation(ExtName.class).value());					
+						builder.append(" - ");
+					}
+					
+				}
+				
 				builder.append(violation.getMessage());
 				builder.append("\n");
 			}
 
-			factory.close();
 			throw new Exception(builder.toString().trim());
 		}
-		
-		factory.close();
 		
 	}
 

@@ -13,6 +13,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public final class WebContextListener implements ServletContextListener {
 	private static Logger LOG = LoggerFactory.getLogger(WebContextListener.class);
 
 	private static ServletContext context;
+	public static ValidatorFactory factory = null;
 
 	public static ServletContext getContext() {
 		return context;
@@ -47,7 +50,7 @@ public final class WebContextListener implements ServletContextListener {
 	 */
 	@Override
 	public void contextDestroyed(final ServletContextEvent event) {
-
+		if (factory != null) factory.close();
 	}
 
 	/**
@@ -64,6 +67,9 @@ public final class WebContextListener implements ServletContextListener {
 		LOG.info("Green Screens Ltd., \u00a9 2016 - {}", year);
 		LOG.info("Email: info@.greenscreens.io");
 		LOG.info("Visit: http://www.greenscreens.io");
+
+		factory = Validation.buildDefaultValidatorFactory();
+		//factory = Validation.byProvider(HibernateProvider.class);
 
 		Security.initialize();
 	}

@@ -242,7 +242,7 @@ Security = (() => {
         var str = stringFromUTF8Array(new Uint8Array(message));
         var obj = JSON.parse(str);
 
-        if (obj.type == 'ws' && obj.cmd === 'data') {
+        if (obj && obj.type == 'ws' && obj.cmd === 'data') {
             obj = obj.data;
         }
 
