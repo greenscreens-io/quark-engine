@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Scanner;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
@@ -35,130 +34,90 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
 		LANG.add("UTF-8");
 	}
 
-	@Override
-	public final String getNegotiatedSubprotocol(final List<String> supported, final List<String> requested) {
-		return QuarkConstants.WEBSOCKET_SUBPROTOCOL;
-	}
-
-	private String findChallenge(final HandshakeRequest request) {
-		final List<String> list = request.getParameterMap().get("q");
-		if (list != null && list.size() > 0) {
-			return list.get(0);
-		}
-		return null;
-	}
-	
-	private int findSessionToken(final HandshakeRequest request) {
-
-		int token = 0;
-		String val = null;
-
-		final List<String> cookiesStr = request.getHeaders().get("cookie");
-		Scanner scan = null;
-		String[] pair = null;
-
-		if (cookiesStr == null) {
-			return -1;
-		}
-
-		for (String cookieStr : cookiesStr) {
-
-			if (val != null) {
-				break;
-			}
-
-			try {
-
-				scan = new Scanner(cookieStr);
-				scan.useDelimiter(";");
-
-				while (scan.hasNext()) {
-
-					pair = scan.next().split("=");
-
-					if ("X-Authorization".equals(pair[0].trim())) {
-						val = pair[1];
-						break;
-					}
-				}
-
-			} finally {
-				Util.close(scan);
-			}
-
-		}
-
-		if (val == null) {
-			final List<String> list = request.getParameterMap().get("t");
-			if (list != null && list.size() > 0) {
-				val = list.get(0);
-			}
-		}
-
-		if (val != null) {
-			try {
-				token = Integer.parseInt(val);
-			} catch (Exception e) {
-
-			}
-		}
-
-		return token;
+	/**
+	 * Find query parameter q, which contains request challenge
+	 * 
+	 * @param request
+	 * @return
+	 */
+	String findChallenge(final HandshakeRequest request) {
+		return WebsocketUtil.findQuery(request, "q");
 	}
 
 	/**
-	 * modifyHandshake() is called before getEndpointInstance()!
+	 * Find session link token based on custom pairing
+	 * 
+	 * @param request
+	 * @return
 	 */
-	@Override
-	public final void modifyHandshake(final ServerEndpointConfig sec, final HandshakeRequest request,
-			final HandshakeResponse response) {
+	int findSessionToken(final HandshakeRequest request) {
 
-		super.modifyHandshake(sec, request, response);
+		final List<String> cookies = request.getHeaders().get("cookie");
+		final Map<String, String> map = WebsocketUtil.parseCookies(cookies);
 
-		response.getHeaders().put("Accept-Language", LANG);
+		String val = map.get("X-Authorization");
+		if (val == null) {
+			val = WebsocketUtil.findQuery(request, "t");
+		}
+
+		return Util.toInt(val);
+	}
+
+	/**
+	 * Find http session attached to websocket
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public HttpSession findSession(final HandshakeRequest request) {
 
 		HttpSession httpSession = (HttpSession) request.getHttpSession();
-		final Map<String, Object> map = sec.getUserProperties();
 
 		if (httpSession == null) {
 			final int token = findSessionToken(request);
 			httpSession = SessionCollector.get(token);
 		}
 
-		if (httpSession != null) {
-			map.put(HttpSession.class.getCanonicalName(), httpSession);
-		}
-
-		map.put(Locale.class.getCanonicalName(), getLocale(request));
-		map.put(QuarkConstants.WEBSOCKET_PATH, sec.getPath());
-		
-		final String challenge = findChallenge(request);
-		if (challenge != null) {
-			map.put(QuarkConstants.WEBSOCKET_CHALLENGE, challenge);
-		}
+		return httpSession;
 	}
 
 	/**
-	 * Store current browser locale
+	 * Store data to websocket user data
 	 * 
-	 * @param request
-	 * @return
+	 * @param sec
+	 * @param key
+	 * @param value
 	 */
-	private Locale getLocale(final HandshakeRequest request) {
-		// Accept-Language:hr,en-US;q=0.8,en;q=0.6
-		final Map<String, List<String>> map = request.getHeaders();
-		final List<String> params = map.get("Accept-Language");
-
-		Locale locale = Locale.ENGLISH;
-
-		if (params != null && !params.isEmpty()) {
-			String data = params.get(0);
-			data = data.split(";")[0];
-			data = data.split(",")[0];
-			locale = new Locale(data);
+	public void store(final ServerEndpointConfig sec, final String key, final Object value) {
+		if (key != null && value != null) {
+			sec.getUserProperties().put(key, value);
 		}
+	}
 
-		return locale;
+	@Override
+	public final String getNegotiatedSubprotocol(final List<String> supported, final List<String> requested) {
+		return QuarkConstants.WEBSOCKET_SUBPROTOCOL;
+	}
+
+	/**
+	 * modifyHandshake() is called before getEndpointInstance()!
+	 */
+	@Override
+	public void modifyHandshake(final ServerEndpointConfig sec, final HandshakeRequest request,
+			final HandshakeResponse response) {
+
+		super.modifyHandshake(sec, request, response);
+
+		response.getHeaders().put("Accept-Language", LANG);
+
+		final HttpSession httpSession = findSession(request);
+		final String challenge = findChallenge(request);
+		final Locale locale = WebsocketUtil.getLocale(request);
+
+		store(sec, QuarkConstants.WEBSOCKET_PATH, sec.getPath());
+		store(sec, QuarkConstants.WEBSOCKET_CHALLENGE, challenge);
+		store(sec, Locale.class.getCanonicalName(), locale);
+		store(sec, HttpSession.class.getCanonicalName(), httpSession);
 	}
 
 }
