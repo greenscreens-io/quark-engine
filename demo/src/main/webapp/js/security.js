@@ -169,6 +169,14 @@ Security = (() => {
         return window.crypto.subtle.decrypt(type, key, dataArray);
     }
 
+	function isValid() {
+		return encKEY !== null && aesKEY !== null;
+	}
+
+	function isAvailable() {
+		return window.crypto.subtle != null;
+	}
+	
     /********************************************************************/
     /*                   P U B L I C  F U N C T I O N S                 */
     /********************************************************************/
@@ -178,6 +186,11 @@ Security = (() => {
      * Verifies data signatures to prevent tampering 
      */
     async function init(cfg) {
+
+		if (!window.crypto.subtle) {
+			console.log('Security mode not available, TLS protocol required.');
+			return;	
+		}
 
         console.log('Security Initializing...');
 
@@ -201,7 +214,7 @@ Security = (() => {
     }
 
     /**
-     *  Decrypt received data in format {d:.., k:...}
+     *  Ecnrypt received data in format {d:.., k:...}
      * @param 
      * 		data  - string to encrypt
      */
@@ -255,8 +268,12 @@ Security = (() => {
      */
     const exported = {
 
+		isAvailable: function() {
+			return isAvailable();
+		},
+		
         isActive: function() {
-            return  encKEY !== null && aesKEY !== null;		
+            return  isValid();		
         },
             
         init: function(cfg) {
