@@ -467,8 +467,12 @@ public final class WebSocketOperations<T> {
 			// response = (ExtJSResponse) javaMethod.invoke(beanInstance, params);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
-			LOG.debug(e.getMessage(), e);
+			final String msg = e.getMessage().replaceAll("\n", "; ");
+			final String [] items = e.getMessage().split("\n");
+			for (String item : items) {
+				LOG.error(item);				
+			}
+			LOG.debug(msg, e);
 			response = new ExtJSResponse(e, e.getMessage());
 		} finally {
 
