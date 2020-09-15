@@ -62,7 +62,7 @@ function buf2hex(buffer) {
  */
 function stringFromUTF8Array(data) {
 
-	const extraByteMap = [1, 1, 1, 1, 2, 2, 3, 0];
+	let extraByteMap = [1, 1, 1, 1, 2, 2, 3, 0];
 	let count = data.length;
 	let str = "";
 

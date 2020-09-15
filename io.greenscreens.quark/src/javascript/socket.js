@@ -19,9 +19,7 @@ SocketChannel = (() => {
 
 	const Decoder = new TextDecoder();
 	const Encoder = new TextEncoder();
-	const Packer = typeof wasm_bindgen == 'function' ? wasm_bindgen : null;
 
-	var supportCompress = false;
 	var tid = 0;
 	var queue = {
 		up: 0,
@@ -95,12 +93,12 @@ SocketChannel = (() => {
 		};
 		msg = JSON.stringify(data);
 
-		if (!supportCompress) {
+		if (!Streams.isAvailable()) {
 			return webSocket.send(msg);
 		}
 
-		msg = Packer.gzip_encode_raw(Encoder.encode(msg));
-		webSocket.send(msg.buffer);
+		msg = await Streams.compress(msg);
+		webSocket.send(msg);
 	}
 
 	/**
@@ -109,15 +107,14 @@ SocketChannel = (() => {
 	 * @param {String} mesasge
 	 *
 	 */
-	function prepareMessage(message) {
+	async function prepareMessage(message) {
 
 		let obj = null;
 
 		try {
 
 			if (message instanceof ArrayBuffer) {
-				let dec = Packer.gzip_decode_raw(new Uint8Array(message));
-				let text = Decoder.decode(dec);
+				let text = await Streams.decompress(message);
 				obj = JSON.parse(text);
 			}
 
@@ -150,7 +147,7 @@ SocketChannel = (() => {
 		if (obj.cmd === 'api') {
 			return Generator.emit('api', obj.data);
 		}
-		
+
 		if (obj.cmd === 'err') {
 			return Generator.emit('error', obj.result);
 		}
@@ -169,7 +166,7 @@ SocketChannel = (() => {
 			}
 
 		}
-		
+
 		Engine.emit('message', obj);
 	}
 
@@ -235,16 +232,6 @@ SocketChannel = (() => {
 	 */
 	async function startSocket(url, wasm, resolve, reject) {
 
-		if (Packer !== null && !supportCompress) {
-			try {
-				wasm = wasm || 'lib/wasm_flate_bg.wasm';
-				let wasmf = await Packer(wasm);
-				supportCompress = wasmf != null;
-			} catch (e) {
-				supportCompress = false;
-			}
-		}
-
 		webSocket = new WebSocket(url, ['ws4is']);
 		webSocket.binaryType = "arraybuffer";
 
@@ -256,6 +243,7 @@ SocketChannel = (() => {
 		webSocket.onclose = function(event) {
 			Generator.off('call', listener);
 			webSocket = null;
+			Engine.emit('offline');
 		}
 
 		webSocket.onerror = function(event) {

@@ -58,8 +58,8 @@ Generator = (() => {
 	 */
 	function buildInstance(api) {
 
-		var tree = null;
-		var action = null;
+		let tree = null;
+		let action = null;
 
 		tree = buildNamespace(api.namespace);
 
@@ -85,7 +85,7 @@ Generator = (() => {
 	 */
 	function buildNamespace(namespace) {
 
-		var tmp = null;
+		let tmp = null;
 
 		namespace.split('.').every(v => {
 
@@ -134,7 +134,7 @@ Generator = (() => {
 	 */
 	function apiFn(params) {
 
-		var prop = params;
+		let prop = params;
 
 		function fn() {
 
@@ -172,7 +172,7 @@ Generator = (() => {
 			return;
 		}
 
-		var sts = (prop.c === obj.action) &&
+		let sts = (prop.c === obj.action) &&
 			(prop.m === obj.method) &&
 			obj.result &&
 			obj.result.success;

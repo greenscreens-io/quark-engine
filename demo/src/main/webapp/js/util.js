@@ -5,7 +5,7 @@
 
 /**
  * Convert hex string to int array
- * 
+ *
  * @param str
  * @returns
  */
@@ -22,12 +22,12 @@ function hex2ab(str) {
 
 /**
  * Convert string to int array
- * 
+ *
  * @param
  * 	 str - string to convert
- * 
+ *
  * @returns
- * 	  ArrayBuffer of ints	
+ * 	  ArrayBuffer of ints
  */
 function str2ab(str) {
 
@@ -43,11 +43,11 @@ function str2ab(str) {
 
 /**
  * Convert array of ints into hex string
- * 
- * @param 
+ *
+ * @param
  * 	buffer - buffer is an ArrayBuffer
- * 
- * @returns 
+ *
+ * @returns
  * 	string in hex format
  */
 function buf2hex(buffer) {
@@ -56,21 +56,21 @@ function buf2hex(buffer) {
 
 /**
  * Convert int array (utf8 encoded) to string
- * 
+ *
  * @param data
  * @returns
  */
 function stringFromUTF8Array(data) {
 
-	const extraByteMap = [1, 1, 1, 1, 2, 2, 3, 0];
+	let extraByteMap = [1, 1, 1, 1, 2, 2, 3, 0];
 	let count = data.length;
 	let str = "";
 
 	for (let index = 0; index < count;) {
-		
+
 		let ch = data[index++];
 		if (ch & 0x80) {
-		
+
 			let extra = extraByteMap[(ch >> 3) & 0x07];
 			if (!(ch & 0x40) || !extra || ((index + extra) > count)) {
 				return null;
@@ -78,7 +78,7 @@ function stringFromUTF8Array(data) {
 
 			ch = ch & (0x3F >> extra);
 			for (; extra > 0; extra -= 1) {
-				
+
 				let chx = data[index++];
 				if ((chx & 0xC0) != 0x80) {
 					return null;
@@ -86,7 +86,7 @@ function stringFromUTF8Array(data) {
 
 				ch = (ch << 6) | (chx & 0x3F);
 			}
-		
+
 		}
 
 		str += String.fromCharCode(ch);
@@ -94,4 +94,3 @@ function stringFromUTF8Array(data) {
 
 	return str;
 }
-
