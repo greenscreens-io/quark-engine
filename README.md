@@ -1,5 +1,5 @@
 
-# [Quark Engine](https://www.greenscreens.io/quark).
+# [Quark Engine](https://quark.greenscreens.ltd/).
 
 Just as quarks are building blocks which glues subatomic particles into atoms,
 Green Screens Quark Engine is a small, lite and fast elementary building block between web and Java server side.
@@ -27,6 +27,6 @@ On front end part, all what is required is to include small JavaScript lib, part
 JavaScript engine is only 7KB in size, and its main purpose is to retrieve signature list of defined exposed
 Java Classes/Methods, then to generate and link internal calling mechanism.
 
-To see how to use it, visit project web page [here](https://www.greenscreens.io/quark).
+To see how to use it, visit project web page [here](https://quark.greenscreens.ltd/).
 
-&copy; Green Screens Ltd. 2016 - 2020
+&copy; Green Screens Ltd. 2016 - 2022
